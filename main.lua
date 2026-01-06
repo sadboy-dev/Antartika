@@ -17,17 +17,6 @@ main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 main.ResetOnSpawn = false
 
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
-local player = Players.LocalPlayer
-local hrp
-
-local routes = {}
-local animConn
-local isMoving = false
-
-local playbackRate = 1
-local isReplayRunning = false
  
 Frame.Parent = main
 Frame.BackgroundColor3 = Color3.fromRGB(163, 255, 137)
@@ -37,8 +26,8 @@ Frame.Size = UDim2.new(0, 300, 0, 150)
 
 TextLabel.Parent = Frame
 TextLabel.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-TextLabel.Position = UDim2.new(0.469327301, 0, 0, 0)
-TextLabel.Size = UDim2.new(0, 90, 0, 28)
+TextLabel.Position = UDim2.new(0.35, 0, 0.05, 0)
+TextLabel.Size = UDim2.new(0, 90, 0, 30)
 TextLabel.Font = Enum.Font.SourceSans
 TextLabel.Text = "Jriik89"
 TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -97,8 +86,8 @@ cp3.TextWrapped = true
 cp4.Name = "cp4"
 cp4.Parent = Frame
 cp4.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-cp4.Position = UDim2.new(0.468421042, 0, 0.491228074, 0)
-cp4.Size = UDim2.new(0, 45, 0, 28)
+cp4.Position = UDim2.new(0.45, 0, 0.25, 0)
+cp4.Size = UDim2.new(0, 60, 0, 30)
 cp4.Font = Enum.Font.SourceSans
 cp4.Text = "CP4"
 cp4.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -109,8 +98,8 @@ cp4.TextWrapped = true
 fn.Name = "fn"
 fn.Parent = Frame
 fn.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-fn.Position = UDim2.new(0.702823281, 0, 0.491228074, 0)
-fn.Size = UDim2.new(0, 45, 0, 28)
+fn.Position = UDim2.new(0.65, 0, 0.5, 0)
+fn.Size = UDim2.new(0, 60, 0, 30)
 fn.Font = Enum.Font.SourceSans
 fn.Text = "FINISH"
 fn.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -209,7 +198,7 @@ local function safeTeleport(root, targetCFrame)
     end
 end
 
-cp1.MouseButton1Click:connect(function()
+cp1.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -217,7 +206,7 @@ cp1.MouseButton1Click:connect(function()
     end
  end)
 
-cp2.MouseButton1Click:connect(function()
+cp2.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -225,7 +214,7 @@ cp2.MouseButton1Click:connect(function()
     end
  end)
 
-vns.MouseButton1Click:connect(function()
+vns.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -233,7 +222,7 @@ vns.MouseButton1Click:connect(function()
     end
  end)
 
-cp3.MouseButton1Click:connect(function()
+cp3.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -241,7 +230,7 @@ cp3.MouseButton1Click:connect(function()
     end
  end)
 
-cp4.MouseButton1Click:connect(function()
+cp4.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -249,7 +238,7 @@ cp4.MouseButton1Click:connect(function()
     end
  end)
 
-fn.MouseButton1Click:connect(function()
+fn.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -278,7 +267,7 @@ mini.MouseButton1Click:Connect(function()
     mini.Visible = false
     mini2.Visible = true
     main.Frame.BackgroundTransparency = 1
-    closebutton.Position =  UDim2.new(0, 0, -1, 57)
+    closebutton.Position = UDim2.new(0, 0, -1, 57)
 end)
  
 mini2.MouseButton1Click:Connect(function()
@@ -293,4 +282,3 @@ mini2.MouseButton1Click:Connect(function()
     main.Frame.BackgroundTransparency = 0 
     closebutton.Position =  UDim2.new(0, 0, -1, 27)
 end)
-
