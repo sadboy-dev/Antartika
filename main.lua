@@ -29,7 +29,9 @@ cp1.Size = UDim2.new(0, 100, 0, 28)
 cp1.Font = Enum.Font.SourceSans
 cp1.Text = "CP1"
 cp1.TextColor3 = Color3.fromRGB(0, 0, 0)
+cp1.TextScaled = true
 cp1.TextSize = 14.000
+cp1.TextWrapped = true
  
 cp2.Name = "cp2"
 cp2.Parent = Frame
