@@ -1,34 +1,55 @@
---// DELTA ANDROID GUI - NEON TELEPORT HUB (ANTI DAMAGE)
+--// DELTA ANDROID - NEON TELEPORT GUI (FULL SAFE VERSION)
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local parentGui = gethui and gethui() or game.CoreGui
 
--- =========================
--- SAFE TELEPORT (ANTI DAMAGE)
--- =========================
+-- =====================================================
+-- SAFE TELEPORT (ANTI DAMAGE + ANTI JATUH + ANTI VOID)
+-- =====================================================
 local function safeTeleport(cf)
 	local char = player.Character or player.CharacterAdded:Wait()
 	local hrp = char:WaitForChild("HumanoidRootPart")
 	local hum = char:WaitForChild("Humanoid")
 
-	-- Freeze physics
+	-- Raycast cari tanah
+	local rayParams = RaycastParams.new()
+	rayParams.FilterDescendantsInstances = {char}
+	rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+
+	local origin = Vector3.new(cf.X, cf.Y + 60, cf.Z)
+	local direction = Vector3.new(0, -500, 0)
+	local result = workspace:Raycast(origin, direction, rayParams)
+
+	local finalY = cf.Y
+	if result then
+		finalY = result.Position.Y + 4
+	end
+
+	-- Freeze total
+	hrp.Anchored = true
 	hum:ChangeState(Enum.HumanoidStateType.Physics)
-	hrp.AssemblyLinearVelocity = Vector3.zero
-	hrp.AssemblyAngularVelocity = Vector3.zero
 
 	-- Teleport
-	hrp.CFrame = cf
+	hrp.CFrame = CFrame.new(cf.X, finalY, cf.Z)
 
-	-- Stabilize
-	task.wait(0.15)
+	-- Stabilkan
+	task.wait(0.25)
 	hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+	hrp.Anchored = false
 end
 
--- =========================
+-- Disable ragdoll & fall (extra safety)
+player.CharacterAdded:Connect(function(char)
+	local hum = char:WaitForChild("Humanoid")
+	hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+	hum:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+end)
+
+-- =====================================================
 -- TELEPORT DATA
--- =========================
+-- =====================================================
 local Teleports = {
 	C1     = CFrame.new(-3640.67, 229.43, 289.87),
 	C2     = CFrame.new(1860.78, 105.82, -235.41),
@@ -38,9 +59,9 @@ local Teleports = {
 	Run    = CFrame.new(10113.24, 552.00, 35.11),
 }
 
--- =========================
+-- =====================================================
 -- GUI
--- =========================
+-- =====================================================
 local gui = Instance.new("ScreenGui")
 gui.Name = "NeonTeleportGUI"
 gui.Parent = parentGui
@@ -109,9 +130,9 @@ holder.Position = UDim2.new(0,0,0,38)
 holder.BackgroundTransparency = 1
 holder.Parent = main
 
--- =========================
+-- =====================================================
 -- BUTTON CREATOR
--- =========================
+-- =====================================================
 local function createButton(name, x, y)
 	local btn = Instance.new("TextButton")
 	btn.Size = UDim2.new(0,130,0,42)
@@ -136,7 +157,7 @@ local function createButton(name, x, y)
 	end)
 end
 
--- Layout (kiri-kanan rapi)
+-- Layout tombol
 local padX, padY, gapY = 15, 18, 55
 local leftX = padX
 local rightX = main.Size.X.Offset - 130 - padX
@@ -161,9 +182,9 @@ close.MouseButton1Click:Connect(function()
 	gui:Destroy()
 end)
 
--- =========================
+-- =====================================================
 -- DRAG (TOUCH + MOUSE)
--- =========================
+-- =====================================================
 local dragging, dragStart, startPos
 
 local function updateDrag(input)
