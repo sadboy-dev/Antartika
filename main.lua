@@ -33,7 +33,7 @@ Frame.Parent = main
 Frame.BackgroundColor3 = Color3.fromRGB(163, 255, 137)
 Frame.BorderColor3 = Color3.fromRGB(103, 221, 213)
 Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
-Frame.Size = UDim2.new(0, 190, 0, 57)
+Frame.Size = UDim2.new(0, 300, 0, 150)
 
 TextLabel.Parent = Frame
 TextLabel.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
@@ -49,7 +49,8 @@ TextLabel.TextWrapped = true
 cp1.Name = "cp1"
 cp1.Parent = Frame
 cp1.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-cp1.Size = UDim2.new(0, 45, 0, 28)
+cp1.Position = UDim2.new(0.05, 0, 0.25, 0)
+cp1.Size = UDim2.new(0, 60, 0, 30)
 cp1.Font = Enum.Font.SourceSans
 cp1.Text = "CP1"
 cp1.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -72,8 +73,8 @@ cp2.TextWrapped = true
 vns.Name = "vns"
 vns.Parent = Frame
 vns.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-vns.Position = UDim2.new(0.231578946, 0, 0, 0)
-vns.Size = UDim2.new(0, 45, 0, 28)
+vns.Position = UDim2.new(0.05, 0, 0.5, 0)
+vns.Size = UDim2.new(0, 60, 0, 30)
 vns.Font = Enum.Font.SourceSans
 vns.Text = "Vinson"
 vns.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -84,8 +85,8 @@ vns.TextWrapped = true
 cp3.Name = "cp3"
 cp3.Parent = Frame
 cp3.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-cp3.Position = UDim2.new(0.231578946, 0, 0.491228074, 0)
-cp3.Size = UDim2.new(0, 45, 0, 29)
+cp3.Position = UDim2.new(0.25, 0, 0.5, 0)
+cp3.Size = UDim2.new(0, 60, 0, 30)
 cp3.Font = Enum.Font.SourceSans
 cp3.Text = "CP3"
 cp3.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -208,7 +209,7 @@ local function safeTeleport(root, targetCFrame)
     end
 end
 
-cp1.MouseButton1Down:connect(function()
+cp1.MouseButton1Click:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -216,7 +217,7 @@ cp1.MouseButton1Down:connect(function()
     end
  end)
 
-cp2.MouseButton1Down:connect(function()
+cp2.MouseButton1Click:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -224,7 +225,7 @@ cp2.MouseButton1Down:connect(function()
     end
  end)
 
-vns.MouseButton1Down:connect(function()
+vns.MouseButton1Click:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -232,15 +233,15 @@ vns.MouseButton1Down:connect(function()
     end
  end)
 
-cp3.MouseButton1Down:connect(function()
+cp3.MouseButton1Click:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        safeTeleport(root, CFrame.new(5962.76, 321.27, 41.44))
+        safeTeleport(root, CFrame.new(5709.64, 320.89, 628.29))
     end
  end)
 
-cp4.MouseButton1Down:connect(function()
+cp4.MouseButton1Click:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -248,7 +249,7 @@ cp4.MouseButton1Down:connect(function()
     end
  end)
 
-fn.MouseButton1Down:connect(function()
+fn.MouseButton1Click:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
@@ -292,3 +293,4 @@ mini2.MouseButton1Click:Connect(function()
     main.Frame.BackgroundTransparency = 0 
     closebutton.Position =  UDim2.new(0, 0, -1, 27)
 end)
+
