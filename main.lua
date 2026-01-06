@@ -1,6 +1,6 @@
 local main = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
-local up = Instance.new("TextButton")
+local cp1 = Instance.new("TextButton")
 local down = Instance.new("TextButton")
 local onof = Instance.new("TextButton")
 local TextLabel = Instance.new("TextLabel")
@@ -22,14 +22,14 @@ Frame.BorderColor3 = Color3.fromRGB(103, 221, 213)
 Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
 Frame.Size = UDim2.new(0, 190, 0, 57)
  
-up.Name = "up"
-up.Parent = Frame
-up.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-up.Size = UDim2.new(0, 44, 0, 28)
-up.Font = Enum.Font.SourceSans
-up.Text = "UP"
-up.TextColor3 = Color3.fromRGB(0, 0, 0)
-up.TextSize = 14.000
+cp1.Name = "cp1"
+cp1.Parent = Frame
+cp1.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
+cp1.Size = UDim2.new(0, 44, 0, 28)
+cp1.Font = Enum.Font.SourceSans
+cp1.Text = "CP1"
+cp1.TextColor3 = Color3.fromRGB(0, 0, 0)
+cp1.TextSize = 14.000
  
 down.Name = "down"
 down.Parent = Frame
@@ -56,7 +56,7 @@ TextLabel.BackgroundColor3 = Color3.fromRGB(242, 60, 255)
 TextLabel.Position = UDim2.new(0.469327301, 0, 0, 0)
 TextLabel.Size = UDim2.new(0, 100, 0, 28)
 TextLabel.Font = Enum.Font.SourceSans
-TextLabel.Text = "Teleport by:Jriik89"
+TextLabel.Text = "Jriik89"
 TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 TextLabel.TextScaled = true
 TextLabel.TextSize = 14.000
@@ -127,90 +127,7 @@ mini2.Position = UDim2.new(0, 44, -1, 57)
 mini2.Visible = false
  
 speeds = 1
-
--- Fungsi untuk menyesuaikan ukuran Frame berdasarkan ukuran teks dan menempatkannya di tengah layar
-local TextService = game:GetService("TextService")
-local function measureText(obj)
-    local text = tostring(obj.Text or "")
-    local textSize = obj.TextSize or 14
-    local font = obj.Font or Enum.Font.SourceSans
-    local bounds = TextService:GetTextSize(text, textSize, font, 1000)
-    return bounds
-end
-
-local function recalcFrame()
-    local padding = 8
-    local spacing = 6
-    local top = {}
-    local bottom = {}
-    for _, child in ipairs(Frame:GetChildren()) do
-        if child:IsA("GuiObject") and child.Visible then
-            local y = 0
-            if child.Position then y = child.Position.Y.Scale end
-            if y < 0.25 then table.insert(top, child) else table.insert(bottom, child) end
-        end
-    end
-    local function rowSize(children)
-        local totalW = 0
-        local maxH = 0
-        for i, c in ipairs(children) do
-            local w,h = 0,0
-            if c:IsA("TextLabel") or c:IsA("TextButton") then
-                local bounds = measureText(c)
-                w = bounds.X + 10
-                h = bounds.Y + 6
-            else
-                w = c.AbsoluteSize.X
-                h = c.AbsoluteSize.Y
-            end
-            totalW = totalW + w
-            if i>1 then totalW = totalW + spacing end
-            if h > maxH then maxH = h end
-        end
-        return totalW, maxH
-    end
-    local w1,h1 = rowSize(top)
-    local w2,h2 = rowSize(bottom)
-    local frameW = math.max(w1,w2, 120) + padding*2
-    local frameH = h1 + h2 + padding*3
-    Frame.Size = UDim2.new(0, frameW, 0, frameH)
-    Frame.AnchorPoint = Vector2.new(0.5, 0.5)
-    Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
-end
-
--- Hubungkan perubahan teks / visibilitas hanya untuk elemen yang relevan
-local layoutNames = { "up", "down", "onof", "plus", "speed", "mine" }
-local function isLayoutChild(obj)
-    if not obj or not obj.Name then return false end
-    for _, name in ipairs(layoutNames) do
-        if obj.Name == name then return true end
-    end
-    return false
-end
-local function connectLayoutSignals(obj)
-    if not obj then return end
-    if not (obj:IsA("TextLabel") or obj:IsA("TextButton")) then return end
-    if not isLayoutChild(obj) then return end
-    obj:GetPropertyChangedSignal("Text"):Connect(recalcFrame)
-    obj:GetPropertyChangedSignal("Visible"):Connect(recalcFrame)
-end
-
--- hubungkan untuk anak yang sudah ada
-for _, name in ipairs(layoutNames) do
-    local child = Frame:FindFirstChild(name)
-    if child then connectLayoutSignals(child) end
-end
-
-Frame.ChildAdded:Connect(function(child)
-    wait()
-    connectLayoutSignals(child)
-    recalcFrame()
-end)
-Frame.ChildRemoved:Connect(function() wait(); recalcFrame() end)
-
--- jalankan sekali di awal
-recalcFrame()
-
+ 
 local speaker = game:GetService("Players").LocalPlayer
  
 local chr = game.Players.LocalPlayer.Character
@@ -426,8 +343,8 @@ end)
  
 local tis
  
-up.MouseButton1Down:connect(function()
-    tis = up.MouseEnter:connect(function()
+cp1.MouseButton1Down:connect(function()
+    tis = cp1.MouseEnter:connect(function()
         while tis do
             wait()
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,1,0)
@@ -435,7 +352,7 @@ up.MouseButton1Down:connect(function()
     end)
 end)
  
-up.MouseLeave:connect(function()
+cp1.MouseLeave:connect(function()
     if tis then
         tis:Disconnect()
         tis = nil
@@ -531,7 +448,7 @@ closebutton.MouseButton1Click:Connect(function()
 end)
  
 mini.MouseButton1Click:Connect(function()
-    up.Visible = false
+    cp1.Visible = false
     down.Visible = false
     onof.Visible = false
     plus.Visible = false
@@ -544,7 +461,7 @@ mini.MouseButton1Click:Connect(function()
 end)
  
 mini2.MouseButton1Click:Connect(function()
-    up.Visible = true
+    cp1.Visible = true
     down.Visible = true
     onof.Visible = true
     plus.Visible = true
