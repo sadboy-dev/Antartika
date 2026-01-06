@@ -9,49 +9,6 @@ local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local parentGui = gethui and gethui() or game.CoreGui
-local uset = Misc:AddSection("User Settings")
-
-local WALKSPEED = uset:AddSlider({
-    Title = "Walkspeed",
-    Content = "",
-    Min = 18,
-    Max = 200,
-    Default = 18,
-    Callback = function(value)
-        local character = LocalPlayer.Character
-        if character then
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid.WalkSpeed = value
-            end
-        end
-    end
-})
-
--- =====================================================
--- TEMP SHIELD (RESPAWN EFFECT)
--- =====================================================
-local function giveShield(duration)
-	local char = player.Character
-	if not char then return end
-
-	-- hapus shield lama jika ada
-	for _,v in ipairs(char:GetChildren()) do
-		if v:IsA("ForceField") then
-			v:Destroy()
-		end
-	end
-
-	local ff = Instance.new("ForceField")
-	ff.Visible = true
-	ff.Parent = char
-
-	task.delay(duration or 2.5, function()
-		if ff and ff.Parent then
-			ff:Destroy()
-		end
-	end)
-end
 
 -- =====================================================
 -- SAFE TELEPORT (ANTI DAMAGE)
@@ -63,7 +20,6 @@ local function safeTeleport(cf)
 
 	hrp.Anchored = true
 	hum:ChangeState(Enum.HumanoidStateType.Physics)
-	giveShield(1.9)
 	hrp.CFrame = cf + Vector3.new(0,4,0)
 
 	task.wait(0.25)
@@ -133,7 +89,7 @@ titleBar.Active = true
 titleBar.ZIndex = 3
 
 local title = Instance.new("TextLabel", titleBar)
-title.Text = "NEON CHECKPOINT"
+title.Text = "Jriik Tools"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 14
 title.TextColor3 = Color3.fromRGB(0,255,255)
@@ -187,6 +143,39 @@ end)
 -- =====================================================
 local buttons = {}
 local currentIndex = 1
+
+local uset = Misc:AddSection("User Settings")
+
+local WALKSPEED = uset:AddSlider({
+    Title = "Walkspeed",
+    Content = "",
+    Min = 18,
+    Max = 200,
+    Default = 18,
+    Callback = function(value)
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = value
+            end
+        end
+    end
+})
+
+uset:AddButton({
+    Title = "Reset Walkspeed",
+    Content = "Returns to default speed.",
+    Callback = function()
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = 18
+            end
+        end
+    end
+})
 
 local function lock(btn,text)
 	btn.Text = text
@@ -309,21 +298,6 @@ UIS.InputChanged:Connect(function(i)
 	end
 end)
 
-uset:AddButton({
-    Title = "Reset Walkspeed",
-    Content = "Returns to default speed.",
-    Callback = function()
-        local character = LocalPlayer.Character
-        if character then
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if humanoid then
-                humanoid.WalkSpeed = 18
-            end
-        end
-    end
-})
-
 UIS.InputEnded:Connect(function()
 	drag=false
 end)
-
