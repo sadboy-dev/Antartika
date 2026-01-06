@@ -1,4 +1,4 @@
---// DELTA SAFE | NEON CHECKPOINT GUI + SHIELD + FAIL-SAFE TELEPORT + 2-COLUMN BUTTONS
+--// DELTA SAFE | NEON CHECKPOINT GUI + SHIELD + FAIL-SAFE TELEPORT + 2-COLUMN + WALK SPEED SLIDER
 
 -- CLEAN OLD GUI
 pcall(function()
@@ -17,7 +17,7 @@ pcall(function()
 end)
 
 ------------------------------------------------
--- SHIELD CONFIG (AUTO ON)
+-- SHIELD CONFIG
 ------------------------------------------------
 local SHIELD_HP = 1000
 local shieldEnabled = true
@@ -26,15 +26,11 @@ local shieldConnection = nil
 local function applyShield(character)
 	if not shieldEnabled then return end
 	if not character then return end
-
 	local hum = character:WaitForChild("Humanoid",5)
 	if not hum then return end
-
 	hum.MaxHealth = SHIELD_HP
 	hum.Health = SHIELD_HP
-
 	if shieldConnection then shieldConnection:Disconnect() end
-
 	shieldConnection = hum.HealthChanged:Connect(function(hp)
 		if shieldEnabled and hp < SHIELD_HP then
 			hum.Health = SHIELD_HP
@@ -42,7 +38,6 @@ local function applyShield(character)
 	end)
 end
 
--- APPLY SHIELD IMMEDIATELY
 if player.Character then applyShield(player.Character) end
 player.CharacterAdded:Connect(function(char)
 	wait(0.3)
@@ -62,7 +57,7 @@ local Checkpoints = {
 }
 
 ------------------------------------------------
--- FAIL-SAFE SAFE TELEPORT
+-- FAIL-SAFE TELEPORT
 ------------------------------------------------
 local function safeTeleport(cf)
 	local char = player.Character or player.CharacterAdded:Wait()
@@ -72,7 +67,6 @@ local function safeTeleport(cf)
 
 	local targetPos = cf.Position
 	local MAX_RETRY = 3
-
 	for attempt = 1, MAX_RETRY do
 		hrp.Anchored = true
 		hum:ChangeState(Enum.HumanoidStateType.Physics)
@@ -80,7 +74,6 @@ local function safeTeleport(cf)
 		wait(0.2)
 		if (hrp.Position - targetPos).Magnitude < 10 then break end
 	end
-
 	hum:ChangeState(Enum.HumanoidStateType.GettingUp)
 	wait(0.05)
 	hrp.Anchored = false
@@ -94,8 +87,8 @@ gui.Name = "NeonCheckpointGui"
 gui.ResetOnSpawn = false
 
 local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0,280,0,240)
-main.Position = UDim2.new(0.5,-140,0.5,-120)
+main.Size = UDim2.new(0,280,0,300)
+main.Position = UDim2.new(0.5,-140,0.5,-150)
 main.BackgroundColor3 = Color3.fromRGB(15,15,20)
 Instance.new("UICorner",main).CornerRadius = UDim.new(0,8)
 
@@ -138,7 +131,7 @@ minimize.BackgroundTransparency = 1
 -- CONTENT HOLDER
 local holder = Instance.new("Frame", main)
 holder.Position = UDim2.new(0,0,0,36)
-holder.Size = UDim2.new(1,0,1,-36)
+holder.Size = UDim2.new(1,0,1,-36-60)
 holder.BackgroundTransparency = 1
 
 -- LOGO RESTORE
@@ -154,7 +147,7 @@ logo.Visible = false
 Instance.new("UICorner",logo).CornerRadius = UDim.new(1,0)
 
 ------------------------------------------------
--- BUTTON SYSTEM (2 COLUMN)
+-- BUTTON SYSTEM 2-COLUMN
 ------------------------------------------------
 local buttons = {}
 local currentIndex = 1
@@ -205,7 +198,7 @@ local function makeButton(i,x,y)
 	buttons[i] = b
 end
 
--- LAYOUT 2 COLUMN
+-- LAYOUT 2-COLUMN
 local px,py,gy = 14,14,52
 local lx,rx = px,280-120-px
 local idx=1
@@ -214,11 +207,57 @@ for r=0,2 do
 	makeButton(idx,rx,py+r*gy); idx+=1
 end
 
--- SYNC INITIAL STATE
-for i,btn in pairs(buttons) do
-	if i == 1 then lock(btn,"WAIT") else lock(btn,"LOCKED") end
-end
-startCooldown(1)
+------------------------------------------------
+-- WALK SPEED SLIDER
+------------------------------------------------
+local sliderHolder = Instance.new("Frame", main)
+sliderHolder.Size = UDim2.new(1,-20,0,50)
+sliderHolder.Position = UDim2.new(0,10,1,-55)
+sliderHolder.BackgroundTransparency = 0.5
+sliderHolder.BackgroundColor3 = Color3.fromRGB(25,25,35)
+Instance.new("UICorner",sliderHolder).CornerRadius = UDim.new(0,8)
+
+local sliderLabel = Instance.new("TextLabel", sliderHolder)
+sliderLabel.Text = "WalkSpeed: 16"
+sliderLabel.Font = Enum.Font.Gotham
+sliderLabel.TextSize = 13
+sliderLabel.TextColor3 = Color3.fromRGB(0,255,255)
+sliderLabel.BackgroundTransparency = 1
+sliderLabel.Size = UDim2.new(1,0,0.4,0)
+sliderLabel.Position = UDim2.new(0,0,0,0)
+
+local slider = Instance.new("TextButton", sliderHolder)
+slider.Text = ""
+slider.BackgroundColor3 = Color3.fromRGB(0,255,255)
+slider.Size = UDim2.new(0.8,0,0.4,10)
+slider.Position = UDim2.new(0.1,0,0.6,0)
+slider.AutoButtonColor = false
+Instance.new("UICorner",slider).CornerRadius = UDim.new(0,4)
+
+slider.MouseButton1Down:Connect(function()
+	local dragging = true
+	local function move(input)
+		if not dragging then return end
+		local rel = math.clamp(input.Position.X - sliderHolder.AbsolutePosition.X,0,sliderHolder.AbsoluteSize.X)
+		local speed = math.floor(rel/sliderHolder.AbsoluteSize.X*100)
+		slider.Size = UDim2.new(speed/100,0,0.4,10)
+		sliderLabel.Text = "WalkSpeed: "..speed
+		if player.Character and player.Character:FindFirstChild("Humanoid") then
+			player.Character.Humanoid.WalkSpeed = speed
+		end
+	end
+	local moveConn
+	moveConn = UIS.InputChanged:Connect(function(input)
+		if input.UserInputType==Enum.UserInputType.MouseMovement then
+			move(input)
+		end
+	end)
+	local releaseConn
+	releaseConn = UIS.InputEnded:Connect(function(input)
+		moveConn:Disconnect()
+		releaseConn:Disconnect()
+	end)
+end)
 
 ------------------------------------------------
 -- MINIMIZE / RESTORE
@@ -226,13 +265,13 @@ startCooldown(1)
 minimize.MouseButton1Click:Connect(function()
 	main.Visible = false
 	logo.Visible = true
+	sliderHolder.Visible = false
 end)
-
 logo.MouseButton1Click:Connect(function()
 	main.Visible = true
 	logo.Visible = false
+	sliderHolder.Visible = true
 end)
-
 close.MouseButton1Click:Connect(function()
 	shieldEnabled = false
 	if shieldConnection then shieldConnection:Disconnect() end
@@ -252,7 +291,6 @@ titleBar.InputBegan:Connect(function(input)
 		startPos = main.Position
 	end
 end)
-
 UIS.InputChanged:Connect(function(input)
 	if dragging and input.UserInputType==Enum.UserInputType.MouseMovement then
 		local delta = input.Position - dragStart
@@ -262,9 +300,7 @@ UIS.InputChanged:Connect(function(input)
 			startPos.Y.Scale,
 			startPos.Y.Offset + delta.Y
 		)
+		-- pastikan slider ikut gerak (jika perlu)
 	end
 end)
-
-UIS.InputEnded:Connect(function()
-	dragging = false
-end)
+UIS.InputEnded:Connect(function() dragging = false end)
