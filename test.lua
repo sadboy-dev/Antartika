@@ -9,6 +9,24 @@ local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local parentGui = gethui and gethui() or game.CoreGui
+local uset = Misc:AddSection("User Settings")
+
+local WALKSPEED = uset:AddSlider({
+    Title = "Walkspeed",
+    Content = "",
+    Min = 18,
+    Max = 200,
+    Default = 18,
+    Callback = function(value)
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = value
+            end
+        end
+    end
+})
 
 -- =====================================================
 -- TEMP SHIELD (RESPAWN EFFECT)
@@ -28,7 +46,7 @@ local function giveShield(duration)
 	ff.Visible = true
 	ff.Parent = char
 
-	task.delay(duration or 1.5, function()
+	task.delay(duration or 2.5, function()
 		if ff and ff.Parent then
 			ff:Destroy()
 		end
@@ -291,6 +309,21 @@ UIS.InputChanged:Connect(function(i)
 	end
 end)
 
+uset:AddButton({
+    Title = "Reset Walkspeed",
+    Content = "Returns to default speed.",
+    Callback = function()
+        local character = LocalPlayer.Character
+        if character then
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = 18
+            end
+        end
+    end
+})
+
 UIS.InputEnded:Connect(function()
 	drag=false
 end)
+
