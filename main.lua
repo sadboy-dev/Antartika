@@ -157,6 +157,8 @@ local function safeTeleport(root, targetCFrame)
     local char = root.Parent
     if not char then return end
     local humanoid = char:FindFirstChildOfClass("Humanoid")
+
+    -- nonaktifkan collision sementara
     local prevCollide = {}
     for _, p in ipairs(char:GetDescendants()) do
         if p:IsA("BasePart") then
@@ -164,14 +166,34 @@ local function safeTeleport(root, targetCFrame)
             p.CanCollide = false
         end
     end
+
+    -- simpan & set PlatformStand
     local prevPlatformStand
     if humanoid then
         prevPlatformStand = humanoid.PlatformStand
         humanoid.PlatformStand = true
     end
-    -- teleport dengan sedikit offset vertikal agar tidak terbenam kedalam objek
+
+    -- buat jendela invulnerabilitas singkat (mencegah penurunan HP sementara)
+    local invDur = 0.6
+    local prevHealth
+    local healthConn
+    if humanoid then
+        prevHealth = humanoid.Health
+        healthConn = humanoid.HealthChanged:Connect(function(h)
+            if h < prevHealth then
+                humanoid.Health = prevHealth
+            end
+        end)
+    end
+
+    -- teleport dengan offset vertikal agar tidak terbenam ke objek
     root.CFrame = targetCFrame + Vector3.new(0, 3, 0)
-    wait(0.2)
+
+    wait(invDur)
+
+    -- kembalikan kondisi
+    if healthConn then healthConn:Disconnect() end
     for p, val in pairs(prevCollide) do
         if p and p.Parent then p.CanCollide = val end
     end
