@@ -1,4 +1,4 @@
---// DELTA SAFE | NEON GUI + PERMANENT SHIELD + FAIL-SAFE TELEPORT
+--// DELTA SAFE | NEON CHECKPOINT GUI + SHIELD + FAIL-SAFE TELEPORT + 2-COLUMN BUTTONS
 
 -- CLEAN OLD GUI
 pcall(function()
@@ -11,13 +11,9 @@ end)
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local player = Players.LocalPlayer
-
--- GUI PARENT (DELTA SAFE)
 local parentGui = game.CoreGui
 pcall(function()
-	if gethui then
-		parentGui = gethui()
-	end
+	if gethui then parentGui = gethui() end
 end)
 
 ------------------------------------------------
@@ -31,15 +27,13 @@ local function applyShield(character)
 	if not shieldEnabled then return end
 	if not character then return end
 
-	local hum = character:WaitForChild("Humanoid", 5)
+	local hum = character:WaitForChild("Humanoid",5)
 	if not hum then return end
 
 	hum.MaxHealth = SHIELD_HP
 	hum.Health = SHIELD_HP
 
-	if shieldConnection then
-		shieldConnection:Disconnect()
-	end
+	if shieldConnection then shieldConnection:Disconnect() end
 
 	shieldConnection = hum.HealthChanged:Connect(function(hp)
 		if shieldEnabled and hp < SHIELD_HP then
@@ -49,10 +43,7 @@ local function applyShield(character)
 end
 
 -- APPLY SHIELD IMMEDIATELY
-if player.Character then
-	applyShield(player.Character)
-end
-
+if player.Character then applyShield(player.Character) end
 player.CharacterAdded:Connect(function(char)
 	wait(0.3)
 	applyShield(char)
@@ -62,12 +53,12 @@ end)
 -- CHECKPOINT DATA
 ------------------------------------------------
 local Checkpoints = {
-	{name="C1",cf=CFrame.new(-3640.67,229.43,289.87),cd=80},
-	{name="C2",cf=CFrame.new(1860.78,105.82,-235.41),cd=60},
-	{name="Vinson",cf=CFrame.new(3731.35,1508.92,-184.39),cd=120},
-	{name="C3",cf=CFrame.new(5709.64,320.89,628.29),cd=90},
-	{name="C4",cf=CFrame.new(8992.34,595.60,103.32),cd=75},
-	{name="Run",cf=CFrame.new(10113.24,552,35.11),cd=45},
+	{name="C1", cf=CFrame.new(-3640.67,229.43,289.87), cd=80},
+	{name="C2", cf=CFrame.new(1860.78,105.82,-235.41), cd=60},
+	{name="Vinson", cf=CFrame.new(3731.35,1508.92,-184.39), cd=120},
+	{name="C3", cf=CFrame.new(5709.64,320.89,628.29), cd=90},
+	{name="C4", cf=CFrame.new(8992.34,595.60,103.32), cd=75},
+	{name="Run", cf=CFrame.new(10113.24,552,35.11), cd=45},
 }
 
 ------------------------------------------------
@@ -83,22 +74,13 @@ local function safeTeleport(cf)
 	local MAX_RETRY = 3
 
 	for attempt = 1, MAX_RETRY do
-		-- freeze sementara
 		hrp.Anchored = true
 		hum:ChangeState(Enum.HumanoidStateType.Physics)
-
-		-- teleport
 		hrp.CFrame = cf + Vector3.new(0,4,0)
 		wait(0.2)
-
-		-- cek berhasil atau tidak
-		local dist = (hrp.Position - targetPos).Magnitude
-		if dist < 10 then
-			break -- sukses
-		end
+		if (hrp.Position - targetPos).Magnitude < 10 then break end
 	end
 
-	-- restore state
 	hum:ChangeState(Enum.HumanoidStateType.GettingUp)
 	wait(0.05)
 	hrp.Anchored = false
@@ -107,12 +89,10 @@ end
 ------------------------------------------------
 -- GUI SETUP
 ------------------------------------------------
-local gui = Instance.new("ScreenGui")
+local gui = Instance.new("ScreenGui", parentGui)
 gui.Name = "NeonCheckpointGui"
 gui.ResetOnSpawn = false
-gui.Parent = parentGui
 
--- MAIN FRAME
 local main = Instance.new("Frame", gui)
 main.Size = UDim2.new(0,280,0,240)
 main.Position = UDim2.new(0.5,-140,0.5,-120)
@@ -155,19 +135,11 @@ minimize.Size = UDim2.new(0,26,0,26)
 minimize.Position = UDim2.new(1,-60,0.5,-13)
 minimize.BackgroundTransparency = 1
 
--- CONTENT
-local content = Instance.new("Frame", main)
-content.Position = UDim2.new(0,0,0,36)
-content.Size = UDim2.new(1,0,1,-36)
-content.BackgroundTransparency = 1
-
-local info = Instance.new("TextLabel", content)
-info.Text = "✓ Shield Active\n✓ GUI Running\n✓ Delta Safe\n✓ Teleport Fail-Safe"
-info.Font = Enum.Font.Gotham
-info.TextSize = 13
-info.TextColor3 = Color3.fromRGB(200,200,200)
-info.BackgroundTransparency = 1
-info.Size = UDim2.new(1,0,1,0)
+-- CONTENT HOLDER
+local holder = Instance.new("Frame", main)
+holder.Position = UDim2.new(0,0,0,36)
+holder.Size = UDim2.new(1,0,1,-36)
+holder.BackgroundTransparency = 1
 
 -- LOGO RESTORE
 local logo = Instance.new("TextButton", gui)
@@ -180,6 +152,73 @@ logo.Position = UDim2.new(0,20,0.5,-22)
 logo.BackgroundColor3 = Color3.fromRGB(15,15,20)
 logo.Visible = false
 Instance.new("UICorner",logo).CornerRadius = UDim.new(1,0)
+
+------------------------------------------------
+-- BUTTON SYSTEM (2 COLUMN)
+------------------------------------------------
+local buttons = {}
+local currentIndex = 1
+
+local function lock(btn,text)
+	btn.Text = text
+	btn.TextColor3 = Color3.fromRGB(130,130,130)
+	btn.AutoButtonColor = false
+end
+
+local function ready(btn,text)
+	btn.Text = text
+	btn.TextColor3 = Color3.fromRGB(0,255,255)
+	btn.AutoButtonColor = true
+end
+
+local function startCooldown(i)
+	local d = Checkpoints[i]
+	local b = buttons[i]
+	if not d or not b then return end
+	task.spawn(function()
+		for t=d.cd,1,-1 do
+			b.Text = "WAIT ("..t.."s)"
+			wait(1)
+		end
+		ready(b,d.name)
+	end)
+end
+
+local function makeButton(i,x,y)
+	local d = Checkpoints[i]
+	if not d then return end
+	local b = Instance.new("TextButton", holder)
+	b.Size = UDim2.new(0,120,0,38)
+	b.Position = UDim2.new(0,x,0,y)
+	b.BackgroundColor3 = Color3.fromRGB(25,25,35)
+	b.Font = Enum.Font.Gotham
+	b.TextSize = 12
+	Instance.new("UICorner",b).CornerRadius = UDim.new(0,8)
+	lock(b,"LOCKED")
+	b.MouseButton1Click:Connect(function()
+		if i ~= currentIndex or b.Text ~= d.name then return end
+		safeTeleport(d.cf)
+		lock(b,"DONE")
+		currentIndex += 1
+		if currentIndex <= #Checkpoints then startCooldown(currentIndex) end
+	end)
+	buttons[i] = b
+end
+
+-- LAYOUT 2 COLUMN
+local px,py,gy = 14,14,52
+local lx,rx = px,280-120-px
+local idx=1
+for r=0,2 do
+	makeButton(idx,lx,py+r*gy); idx+=1
+	makeButton(idx,rx,py+r*gy); idx+=1
+end
+
+-- SYNC INITIAL STATE
+for i,btn in pairs(buttons) do
+	if i == 1 then lock(btn,"WAIT") else lock(btn,"LOCKED") end
+end
+startCooldown(1)
 
 ------------------------------------------------
 -- MINIMIZE / RESTORE
@@ -196,9 +235,7 @@ end)
 
 close.MouseButton1Click:Connect(function()
 	shieldEnabled = false
-	if shieldConnection then
-		shieldConnection:Disconnect()
-	end
+	if shieldConnection then shieldConnection:Disconnect() end
 	gui:Destroy()
 end)
 
@@ -209,7 +246,7 @@ local dragging = false
 local dragStart, startPos
 
 titleBar.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+	if input.UserInputType==Enum.UserInputType.MouseButton1 then
 		dragging = true
 		dragStart = input.Position
 		startPos = main.Position
@@ -217,7 +254,7 @@ titleBar.InputBegan:Connect(function(input)
 end)
 
 UIS.InputChanged:Connect(function(input)
-	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+	if dragging and input.UserInputType==Enum.UserInputType.MouseMovement then
 		local delta = input.Position - dragStart
 		main.Position = UDim2.new(
 			startPos.X.Scale,
@@ -231,8 +268,3 @@ end)
 UIS.InputEnded:Connect(function()
 	dragging = false
 end)
-
-------------------------------------------------
--- CHECKPOINT BUTTON SYSTEM (Optional)
--- Tambahkan checkpoint / teleport buttons disini jika ingin
-------------------------------------------------
