@@ -147,9 +147,12 @@ Frame.Active = true -- main = gui
 Frame.Draggable = true
 
 
-cp1 MouseButton1Down:connect(function()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(3718.99, 255.00, 235.67)
+
+cp1.MouseButton1Down:connect(function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(3718.99, 255.00, 235.67)
 end)
+
+
  
 fn.MouseButton1Down:connect(function()
  
@@ -341,11 +344,6 @@ fn.MouseButton1Down:connect(function()
  
  
     end
- 
- 
- 
- 
- 
 end)
  
 
