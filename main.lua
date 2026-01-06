@@ -1,12 +1,12 @@
 local main = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
-local cp1 = Instance.new("TextButton")
-local down = Instance.new("TextButton")
-local onof = Instance.new("TextButton")
 local TextLabel = Instance.new("TextLabel")
-local plus = Instance.new("TextButton")
-local speed = Instance.new("TextLabel")
-local mine = Instance.new("TextButton")
+local cp1 = Instance.new("TextButton")
+local cp2 = Instance.new("TextButton")
+local vns = Instance.new("TextButton")
+local cp3 = Instance.new("TextButton")
+local cp4 = Instance.new("TextLabel")
+local fn = Instance.new("TextButton")
 local closebutton = Instance.new("TextButton")
 local mini = Instance.new("TextButton")
 local mini2 = Instance.new("TextButton")
@@ -31,25 +31,25 @@ cp1.Text = "CP1"
 cp1.TextColor3 = Color3.fromRGB(0, 0, 0)
 cp1.TextSize = 14.000
  
-down.Name = "down"
-down.Parent = Frame
-down.BackgroundColor3 = Color3.fromRGB(215, 255, 121)
-down.Position = UDim2.new(0, 0, 0.491228074, 0)
-down.Size = UDim2.new(0, 44, 0, 28)
-down.Font = Enum.Font.SourceSans
-down.Text = "DOWN"
-down.TextColor3 = Color3.fromRGB(0, 0, 0)
-down.TextSize = 14.000
+cp2.Name = "cp2"
+cp2.Parent = Frame
+cp2.BackgroundColor3 = Color3.fromRGB(215, 255, 121)
+cp2.Position = UDim2.new(0, 0, 0.491228074, 0)
+cp2.Size = UDim2.new(0, 44, 0, 28)
+cp2.Font = Enum.Font.SourceSans
+cp2.Text = "CP2"
+cp2.TextColor3 = Color3.fromRGB(0, 0, 0)
+cp2.TextSize = 14.000
  
-onof.Name = "onof"
-onof.Parent = Frame
-onof.BackgroundColor3 = Color3.fromRGB(255, 249, 74)
-onof.Position = UDim2.new(0.702823281, 0, 0.491228074, 0)
-onof.Size = UDim2.new(0, 56, 0, 28)
-onof.Font = Enum.Font.SourceSans
-onof.Text = "fly"
-onof.TextColor3 = Color3.fromRGB(0, 0, 0)
-onof.TextSize = 14.000
+fn.Name = "fn"
+fn.Parent = Frame
+fn.BackgroundColor3 = Color3.fromRGB(255, 249, 74)
+fn.Position = UDim2.new(0.702823281, 0, 0.491228074, 0)
+fn.Size = UDim2.new(0, 56, 0, 28)
+fn.Font = Enum.Font.SourceSans
+fn.Text = "FINISH"
+fn.TextColor3 = Color3.fromRGB(0, 0, 0)
+fn.TextSize = 14.000
  
 TextLabel.Parent = Frame
 TextLabel.BackgroundColor3 = Color3.fromRGB(242, 60, 255)
@@ -62,41 +62,41 @@ TextLabel.TextScaled = true
 TextLabel.TextSize = 14.000
 TextLabel.TextWrapped = true
  
-plus.Name = "plus"
-plus.Parent = Frame
-plus.BackgroundColor3 = Color3.fromRGB(133, 145, 255)
-plus.Position = UDim2.new(0.231578946, 0, 0, 0)
-plus.Size = UDim2.new(0, 45, 0, 28)
-plus.Font = Enum.Font.SourceSans
-plus.Text = "+"
-plus.TextColor3 = Color3.fromRGB(0, 0, 0)
-plus.TextScaled = true
-plus.TextSize = 14.000
-plus.TextWrapped = true
+vns.Name = "vinson"
+vns.Parent = Frame
+vns.BackgroundColor3 = Color3.fromRGB(133, 145, 255)
+vns.Position = UDim2.new(0.231578946, 0, 0, 0)
+vns.Size = UDim2.new(0, 45, 0, 28)
+vns.Font = Enum.Font.SourceSans
+vns.Text = "Vinson"
+vns.TextColor3 = Color3.fromRGB(0, 0, 0)
+vns.TextScaled = true
+vns.TextSize = 14.000
+vns.TextWrapped = true
  
-speed.Name = "speed"
-speed.Parent = Frame
-speed.BackgroundColor3 = Color3.fromRGB(255, 85, 0)
-speed.Position = UDim2.new(0.468421042, 0, 0.491228074, 0)
-speed.Size = UDim2.new(0, 44, 0, 28)
-speed.Font = Enum.Font.SourceSans
-speed.Text = "1"
-speed.TextColor3 = Color3.fromRGB(0, 0, 0)
-speed.TextScaled = true
-speed.TextSize = 14.000
-speed.TextWrapped = true
+cp4.Name = "cp4"
+cp4.Parent = Frame
+cp4.BackgroundColor3 = Color3.fromRGB(255, 85, 0)
+cp4.Position = UDim2.new(0.468421042, 0, 0.491228074, 0)
+cp4.Size = UDim2.new(0, 44, 0, 28)
+cp4.Font = Enum.Font.SourceSans
+cp4.Text = "CP4"
+cp4.TextColor3 = Color3.fromRGB(0, 0, 0)
+cp4.TextScaled = true
+cp4.TextSize = 14.000
+cp4.TextWrapped = true
  
-mine.Name = "mine"
-mine.Parent = Frame
-mine.BackgroundColor3 = Color3.fromRGB(123, 255, 247)
-mine.Position = UDim2.new(0.231578946, 0, 0.491228074, 0)
-mine.Size = UDim2.new(0, 45, 0, 29)
-mine.Font = Enum.Font.SourceSans
-mine.Text = "-"
-mine.TextColor3 = Color3.fromRGB(0, 0, 0)
-mine.TextScaled = true
-mine.TextSize = 14.000
-mine.TextWrapped = true
+cp3.Name = "cp3"
+cp3.Parent = Frame
+cp3.BackgroundColor3 = Color3.fromRGB(123, 255, 247)
+cp3.Position = UDim2.new(0.231578946, 0, 0.491228074, 0)
+cp3.Size = UDim2.new(0, 45, 0, 29)
+cp3.Font = Enum.Font.SourceSans
+cp3.Text = "CP3"
+cp3.TextColor3 = Color3.fromRGB(0, 0, 0)
+cp3.TextScaled = true
+cp3.TextSize = 14.000
+cp3.TextWrapped = true
  
 closebutton.Name = "Close"
 closebutton.Parent = main.Frame
@@ -136,7 +136,7 @@ local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
 nowe = false
  
 game:GetService("StarterGui"):SetCore("SendNotification", { 
-    Title = "Fly Actived";
+    Title = "Script Teleport By:";
     Text = "Jriik89";
     Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"})
 Duration = 5;
@@ -144,7 +144,7 @@ Duration = 5;
 Frame.Active = true -- main = gui
 Frame.Draggable = true
  
-onof.MouseButton1Down:connect(function()
+fn.MouseButton1Down:connect(function()
  
     if nowe == true then
         nowe = false
@@ -361,8 +361,8 @@ end)
  
 local dis
  
-down.MouseButton1Down:connect(function()
-    dis = down.MouseEnter:connect(function()
+cp2.MouseButton1Down:connect(function()
+    dis = cp2.MouseEnter:connect(function()
         while dis do
             wait()
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,-1,0)
@@ -370,7 +370,7 @@ down.MouseButton1Down:connect(function()
     end)
 end)
  
-down.MouseLeave:connect(function()
+cp2.MouseLeave:connect(function()
     if dis then
         dis:Disconnect()
         dis = nil
@@ -386,7 +386,7 @@ game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function(char)
 end)
  
  
-plus.MouseButton1Down:connect(function()
+vinson.MouseButton1Down:connect(function()
     speeds = speeds + 1
     speed.Text = speeds
     if nowe == true then
@@ -412,7 +412,7 @@ plus.MouseButton1Down:connect(function()
         end
     end
 end)
-mine.MouseButton1Down:connect(function()
+cp3.MouseButton1Down:connect(function()
     if speeds == 1 then
         speed.Text = 'cannot be less than 1'
         wait(1)
@@ -449,11 +449,11 @@ end)
  
 mini.MouseButton1Click:Connect(function()
     cp1.Visible = false
-    down.Visible = false
-    onof.Visible = false
-    plus.Visible = false
-    speed.Visible = false
-    mine.Visible = false
+    cp2.Visible = false
+    vns.Visible = false
+    cp3.Visible = false
+    cp4.Visible = false
+    fn.Visible = false
     mini.Visible = false
     mini2.Visible = true
     main.Frame.BackgroundTransparency = 1
@@ -462,11 +462,11 @@ end)
  
 mini2.MouseButton1Click:Connect(function()
     cp1.Visible = true
-    down.Visible = true
-    onof.Visible = true
-    plus.Visible = true
-    speed.Visible = true
-    mine.Visible = true
+    cp2.Visible = true
+    vns.Visible = true
+    cp3.Visible = true
+    cp4.Visible = true
+    fn.Visible = true
     mini.Visible = true
     mini2.Visible = false
     main.Frame.BackgroundTransparency = 0 
