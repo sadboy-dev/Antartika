@@ -1,4 +1,5 @@
---// DELTA SAFE | NEON CHECKPOINT GUI + SHIELD + FAIL-SAFE TELEPORT + 2-COLUMN + WALK SPEED SLIDER
+--// DELTA SAFE | FULL READY 1 FILE
+-- NEON GUI + SHIELD + FAIL-SAFE TELEPORT + 2-COLUMN + WALK SPEED SLIDER + MOBILE DRAG
 
 -- CLEAN OLD GUI
 pcall(function()
@@ -12,9 +13,7 @@ local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local parentGui = game.CoreGui
-pcall(function()
-	if gethui then parentGui = gethui() end
-end)
+pcall(function() if gethui then parentGui = gethui() end end)
 
 ------------------------------------------------
 -- SHIELD CONFIG
@@ -22,27 +21,20 @@ end)
 local SHIELD_HP = 1000
 local shieldEnabled = true
 local shieldConnection = nil
-
 local function applyShield(character)
-	if not shieldEnabled then return end
-	if not character then return end
+	if not shieldEnabled or not character then return end
 	local hum = character:WaitForChild("Humanoid",5)
 	if not hum then return end
 	hum.MaxHealth = SHIELD_HP
 	hum.Health = SHIELD_HP
 	if shieldConnection then shieldConnection:Disconnect() end
 	shieldConnection = hum.HealthChanged:Connect(function(hp)
-		if shieldEnabled and hp < SHIELD_HP then
-			hum.Health = SHIELD_HP
-		end
+		if shieldEnabled and hp < SHIELD_HP then hum.Health = SHIELD_HP end
 	end)
 end
 
 if player.Character then applyShield(player.Character) end
-player.CharacterAdded:Connect(function(char)
-	wait(0.3)
-	applyShield(char)
-end)
+player.CharacterAdded:Connect(function(char) wait(0.3) applyShield(char) end)
 
 ------------------------------------------------
 -- CHECKPOINT DATA
@@ -64,7 +56,6 @@ local function safeTeleport(cf)
 	local hum = char:WaitForChild("Humanoid",5)
 	local hrp = char:WaitForChild("HumanoidRootPart",5)
 	if not hum or not hrp then return end
-
 	local targetPos = cf.Position
 	local MAX_RETRY = 3
 	for attempt = 1, MAX_RETRY do
@@ -157,13 +148,11 @@ local function lock(btn,text)
 	btn.TextColor3 = Color3.fromRGB(130,130,130)
 	btn.AutoButtonColor = false
 end
-
 local function ready(btn,text)
 	btn.Text = text
 	btn.TextColor3 = Color3.fromRGB(0,255,255)
 	btn.AutoButtonColor = true
 end
-
 local function startCooldown(i)
 	local d = Checkpoints[i]
 	local b = buttons[i]
@@ -176,7 +165,6 @@ local function startCooldown(i)
 		ready(b,d.name)
 	end)
 end
-
 local function makeButton(i,x,y)
 	local d = Checkpoints[i]
 	if not d then return end
@@ -206,6 +194,10 @@ for r=0,2 do
 	makeButton(idx,lx,py+r*gy); idx+=1
 	makeButton(idx,rx,py+r*gy); idx+=1
 end
+for i,btn in pairs(buttons) do
+	if i == 1 then lock(btn,"WAIT") else lock(btn,"LOCKED") end
+end
+startCooldown(1)
 
 ------------------------------------------------
 -- WALK SPEED SLIDER
@@ -213,7 +205,6 @@ end
 local sliderHolder = Instance.new("Frame", main)
 sliderHolder.Size = UDim2.new(1,-20,0,50)
 sliderHolder.Position = UDim2.new(0,10,1,-55)
-sliderHolder.BackgroundTransparency = 0.5
 sliderHolder.BackgroundColor3 = Color3.fromRGB(25,25,35)
 Instance.new("UICorner",sliderHolder).CornerRadius = UDim.new(0,8)
 
@@ -226,37 +217,39 @@ sliderLabel.BackgroundTransparency = 1
 sliderLabel.Size = UDim2.new(1,0,0.4,0)
 sliderLabel.Position = UDim2.new(0,0,0,0)
 
-local slider = Instance.new("TextButton", sliderHolder)
-slider.Text = ""
+local slider = Instance.new("Frame", sliderHolder)
+slider.Size = UDim2.new(0.16,0,0.4,10)
+slider.Position = UDim2.new(0,0,0.6,0)
 slider.BackgroundColor3 = Color3.fromRGB(0,255,255)
-slider.Size = UDim2.new(0.8,0,0.4,10)
-slider.Position = UDim2.new(0.1,0,0.6,0)
-slider.AutoButtonColor = false
 Instance.new("UICorner",slider).CornerRadius = UDim.new(0,4)
 
-slider.MouseButton1Down:Connect(function()
-	local dragging = true
-	local function move(input)
-		if not dragging then return end
-		local rel = math.clamp(input.Position.X - sliderHolder.AbsolutePosition.X,0,sliderHolder.AbsoluteSize.X)
-		local speed = math.floor(rel/sliderHolder.AbsoluteSize.X*100)
-		slider.Size = UDim2.new(speed/100,0,0.4,10)
-		sliderLabel.Text = "WalkSpeed: "..speed
-		if player.Character and player.Character:FindFirstChild("Humanoid") then
-			player.Character.Humanoid.WalkSpeed = speed
-		end
+-- FUNCTION SLIDER MOVE
+local function updateSlider(posX)
+	local rel = math.clamp(posX - sliderHolder.AbsolutePosition.X,0,sliderHolder.AbsoluteSize.X)
+	slider.Size = UDim2.new(rel/sliderHolder.AbsoluteSize.X,0,0.4,10)
+	local speed = math.floor(rel/sliderHolder.AbsoluteSize.X*100)
+	sliderLabel.Text = "WalkSpeed: "..speed
+	if player.Character and player.Character:FindFirstChild("Humanoid") then
+		player.Character.Humanoid.WalkSpeed = speed
 	end
-	local moveConn
-	moveConn = UIS.InputChanged:Connect(function(input)
-		if input.UserInputType==Enum.UserInputType.MouseMovement then
-			move(input)
-		end
-	end)
-	local releaseConn
-	releaseConn = UIS.InputEnded:Connect(function(input)
-		moveConn:Disconnect()
-		releaseConn:Disconnect()
-	end)
+end
+
+local draggingSlider = false
+sliderHolder.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+		draggingSlider = true
+		updateSlider(input.Position.X)
+	end
+end)
+sliderHolder.InputChanged:Connect(function(input)
+	if draggingSlider and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
+		updateSlider(input.Position.X)
+	end
+end)
+sliderHolder.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+		draggingSlider = false
+	end
 end)
 
 ------------------------------------------------
@@ -279,28 +272,35 @@ close.MouseButton1Click:Connect(function()
 end)
 
 ------------------------------------------------
--- DRAG SUPPORT
+-- DRAG SUPPORT HP + PC
 ------------------------------------------------
 local dragging = false
 local dragStart, startPos
 
+local function dragUpdate(input)
+	local delta = input.Position - dragStart
+	main.Position = UDim2.new(
+		startPos.X.Scale,
+		startPos.X.Offset + delta.X,
+		startPos.Y.Scale,
+		startPos.Y.Offset + delta.Y
+	)
+end
+
 titleBar.InputBegan:Connect(function(input)
-	if input.UserInputType==Enum.UserInputType.MouseButton1 then
+	if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
 		startPos = main.Position
 	end
 end)
 UIS.InputChanged:Connect(function(input)
-	if dragging and input.UserInputType==Enum.UserInputType.MouseMovement then
-		local delta = input.Position - dragStart
-		main.Position = UDim2.new(
-			startPos.X.Scale,
-			startPos.X.Offset + delta.X,
-			startPos.Y.Scale,
-			startPos.Y.Offset + delta.Y
-		)
-		-- pastikan slider ikut gerak (jika perlu)
+	if dragging and (input.UserInputType==Enum.UserInputType.MouseMovement or input.UserInputType==Enum.UserInputType.Touch) then
+		dragUpdate(input)
 	end
 end)
-UIS.InputEnded:Connect(function() dragging = false end)
+UIS.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = false
+	end
+end)
