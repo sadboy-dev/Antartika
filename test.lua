@@ -1,19 +1,15 @@
---// DELTA SAFE | FINAL ULTRA READY FULL
--- NEON GUI + SHIELD + FAIL-SAFE TELEPORT + 2-COLUMN + SLIDER COMPACT + SAFE TOUCH + DRAGABLE LOGO
+--// DELTA SAFE | FINAL ULTRA READY MODERN TWEEN
+-- GUI + SLIDER + SHIELD + TELEPORT + ANIMASI TWEEN
 
--- CLEAN OLD GUI
-pcall(function()
-	if game.CoreGui:FindFirstChild("NeonCheckpointGui") then
-		game.CoreGui.NeonCheckpointGui:Destroy()
-	end
-end)
-
--- SERVICES
+local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local parentGui = game.CoreGui
 pcall(function() if gethui then parentGui = gethui() end end)
+
+-- CLEAN OLD GUI
+pcall(function() if parentGui:FindFirstChild("NeonCheckpointGui") then parentGui.NeonCheckpointGui:Destroy() end end)
 
 ------------------------------------------------
 -- SHIELD CONFIG
@@ -75,19 +71,17 @@ local gui = Instance.new("ScreenGui", parentGui)
 gui.Name = "NeonCheckpointGui"
 gui.ResetOnSpawn = false
 
--- MAIN FRAME (COMPACT)
 local main = Instance.new("Frame", gui)
 main.Size = UDim2.new(0,280,0,260)
 main.Position = UDim2.new(0.5,-140,0.5,-130)
 main.BackgroundColor3 = Color3.fromRGB(15,15,20)
 Instance.new("UICorner",main).CornerRadius=UDim.new(0,8)
 
--- TITLE BAR
+-- TITLE
 local titleBar = Instance.new("Frame", main)
 titleBar.Size = UDim2.new(1,0,0,36)
 titleBar.BackgroundColor3 = Color3.fromRGB(20,20,30)
-titleBar.Active=true
-
+titleBar.Active = true
 local title = Instance.new("TextLabel", titleBar)
 title.Text="Jriik Tools"
 title.Font=Enum.Font.GothamBold
@@ -105,16 +99,16 @@ close.TextSize=14
 close.TextColor3=Color3.fromRGB(255,80,80)
 close.Size = UDim2.new(0,26,0,26)
 close.Position = UDim2.new(1,-30,0.5,-13)
-close.BackgroundTransparency = 1
+close.BackgroundTransparency=1
 
 local minimize = Instance.new("TextButton", titleBar)
 minimize.Text="—"
 minimize.Font=Enum.Font.GothamBold
 minimize.TextSize=18
 minimize.TextColor3=Color3.fromRGB(0,255,255)
-minimize.Size = UDim2.new(0,26,0,26)
-minimize.Position = UDim2.new(1,-60,0.5,-13)
-minimize.BackgroundTransparency = 1
+minimize.Size=UDim2.new(0,26,0,26)
+minimize.Position=UDim2.new(1,-60,0.5,-13)
+minimize.BackgroundTransparency=1
 
 local holder = Instance.new("Frame", main)
 holder.Position = UDim2.new(0,0,0,36)
@@ -130,32 +124,35 @@ logo.TextColor3=Color3.fromRGB(0,255,255)
 logo.Size = UDim2.new(0,44,0,44)
 logo.Position = UDim2.new(0,20,0.5,-22)
 logo.BackgroundColor3=Color3.fromRGB(15,15,20)
-logo.Visible = false
+logo.Visible=false
 Instance.new("UICorner",logo).CornerRadius=UDim.new(1,0)
 
--- SAFE LOGO HITBOX
-local logoHitbox = Instance.new("TextButton", gui)
-logoHitbox.Size = UDim2.new(0,70,0,70)
-logoHitbox.Position = UDim2.new(0, logo.Position.X.Offset-13, 0, logo.Position.Y.Offset-13)
-logoHitbox.BackgroundTransparency = 1
-logoHitbox.Text = ""
-logoHitbox.ZIndex = logo.ZIndex - 1
-logoHitbox.Visible = true
-logoHitbox.Active = true
-
 ------------------------------------------------
--- BUTTON SYSTEM 2-COLUMN
+-- BUTTON 2-COLUMN WITH TWEEN
 ------------------------------------------------
 local buttons={}
 local currentIndex=1
-local function lock(btn,text) btn.Text=text; btn.TextColor3=Color3.fromRGB(130,130,130); btn.AutoButtonColor=false end
-local function ready(btn,text) btn.Text=text; btn.TextColor3=Color3.fromRGB(0,255,255); btn.AutoButtonColor=true end
+local function lock(btn,text)
+	btn.Text=text
+	btn.TextColor3=Color3.fromRGB(130,130,130)
+	btn.AutoButtonColor=false
+	TweenService:Create(btn, TweenInfo.new(0.3), {BackgroundTransparency=0.5}):Play()
+end
+local function ready(btn,text)
+	btn.Text=text
+	btn.TextColor3=Color3.fromRGB(0,255,255)
+	btn.AutoButtonColor=true
+	TweenService:Create(btn, TweenInfo.new(0.3), {BackgroundTransparency=0}):Play()
+end
 local function startCooldown(i)
 	local d=Checkpoints[i]
 	local b=buttons[i]
 	if not d or not b then return end
 	task.spawn(function()
-		for t=d.cd,1,-1 do b.Text="WAIT ("..t.."s)"; wait(1) end
+		for t=d.cd,1,-1 do
+			b.Text="WAIT ("..t.."s)"
+			wait(1)
+		end
 		ready(b,d.name)
 	end)
 end
@@ -177,12 +174,12 @@ local function makeButton(i,x,y)
 		currentIndex += 1
 		if currentIndex <= #Checkpoints then startCooldown(currentIndex) end
 	end)
-	buttons[i] = b
+	buttons[i]=b
 end
 
 local px,py,gy = 14,14,48
 local lx,rx = px,280-120-px
-local idx = 1
+local idx=1
 for r=0,2 do
 	makeButton(idx,lx,py+r*gy); idx+=1
 	makeButton(idx,rx,py+r*gy); idx+=1
@@ -191,53 +188,49 @@ for i,btn in pairs(buttons) do if i==1 then lock(btn,"WAIT") else lock(btn,"LOCK
 startCooldown(1)
 
 ------------------------------------------------
--- SLIDER COMPACT | TRACK + BAR + TEXT DI ATAS
+-- SLIDER MODERN TWEEN
 ------------------------------------------------
 local sliderHolder = Instance.new("Frame", main)
-sliderHolder.Size = UDim2.new(1,-40,0,35)
-sliderHolder.Position = UDim2.new(0,20,1,-55)
-sliderHolder.BackgroundTransparency = 1
-sliderHolder.ClipsDescendants = true
+sliderHolder.Size=UDim2.new(1,-40,0,40)
+sliderHolder.Position=UDim2.new(0,20,1,-60)
+sliderHolder.BackgroundTransparency=1
+sliderHolder.ClipsDescendants=true
 
--- Text label
 local sliderLabel = Instance.new("TextLabel", sliderHolder)
 sliderLabel.Text="WalkSpeed: 16"
-sliderLabel.Font = Enum.Font.Gotham
-sliderLabel.TextSize = 13
-sliderLabel.TextColor3 = Color3.fromRGB(0,255,255)
-sliderLabel.BackgroundTransparency = 1
-sliderLabel.Size = UDim2.new(1,0,0.4,0)
-sliderLabel.Position = UDim2.new(0,0,0,0)
+sliderLabel.Font=Enum.Font.Gotham
+sliderLabel.TextSize=13
+sliderLabel.TextColor3=Color3.fromRGB(0,255,255)
+sliderLabel.BackgroundTransparency=1
+sliderLabel.Size=UDim2.new(1,0,0.4,0)
+sliderLabel.Position=UDim2.new(0,0,0,0)
 
--- Track abu-abu
 local sliderTrack = Instance.new("Frame", sliderHolder)
-sliderTrack.Size = UDim2.new(1,0,0.4,10)
-sliderTrack.Position = UDim2.new(0,0,0.6,0)
-sliderTrack.BackgroundColor3 = Color3.fromRGB(50,50,50)
-Instance.new("UICorner", sliderTrack).CornerRadius = UDim.new(0,5)
+sliderTrack.Size=UDim2.new(1,0,0,10)
+sliderTrack.Position=UDim2.new(0,0,0.5,0)
+sliderTrack.BackgroundColor3=Color3.fromRGB(50,50,50)
+Instance.new("UICorner",sliderTrack).CornerRadius=UDim.new(0,5)
 
--- Bar biru
 local sliderBar = Instance.new("Frame", sliderTrack)
-sliderBar.Size = UDim2.new(0.16,0,1,0)
-sliderBar.Position = UDim2.new(0,0,0,0)
-sliderBar.BackgroundColor3 = Color3.fromRGB(0,255,255)
-Instance.new("UICorner", sliderBar).CornerRadius=UDim.new(0,5)
+sliderBar.Size=UDim2.new(0.16,0,1,0)
+sliderBar.Position=UDim2.new(0,0,0,0)
+sliderBar.BackgroundColor3=Color3.fromRGB(0,255,255)
+Instance.new("UICorner",sliderBar).CornerRadius=UDim.new(0,5)
 
--- Fungsi update slider
+local draggingSlider=false
 local function updateSlider(posX)
-	local rel = math.clamp(posX - sliderTrack.AbsolutePosition.X, 0, sliderTrack.AbsoluteSize.X)
-	sliderBar.Size = UDim2.new(rel/sliderTrack.AbsoluteSize.X,0,1,0)
+	local rel = math.clamp(posX-sliderTrack.AbsolutePosition.X,0,sliderTrack.AbsoluteSize.X)
 	local speed = math.floor(rel/sliderTrack.AbsoluteSize.X*100)
-	sliderLabel.Text = "WalkSpeed: "..speed
+	sliderLabel.Text="WalkSpeed: "..speed
+	TweenService:Create(sliderBar, TweenInfo.new(0.2), {Size=UDim2.new(rel/sliderTrack.AbsoluteSize.X,0,1,0)}):Play()
 	if player.Character and player.Character:FindFirstChild("Humanoid") then
 		player.Character.Humanoid.WalkSpeed = speed
 	end
 end
 
-local draggingSlider=false
 sliderTrack.InputBegan:Connect(function(input)
 	if input.UserInputType==Enum.UserInputType.Touch or input.UserInputType==Enum.UserInputType.MouseButton1 then
-		draggingSlider = true
+		draggingSlider=true
 		updateSlider(input.Position.X)
 	end
 end)
@@ -248,24 +241,26 @@ sliderTrack.InputChanged:Connect(function(input)
 end)
 sliderTrack.InputEnded:Connect(function(input)
 	if input.UserInputType==Enum.UserInputType.Touch or input.UserInputType==Enum.UserInputType.MouseButton1 then
-		draggingSlider = false
+		draggingSlider=false
 	end
 end)
 
 ------------------------------------------------
--- MINIMIZE / RESTORE DENGAN DEBOUNCE
+-- MINIMIZE / RESTORE TWEEN
 ------------------------------------------------
-local canToggle = true
+local canToggle=true
 local function safeClick(func)
 	if not canToggle then return end
-	canToggle = false
+	canToggle=false
 	func()
 	task.wait(0.2)
-	canToggle = true
+	canToggle=true
 end
 
 minimize.MouseButton1Click:Connect(function()
 	safeClick(function()
+		TweenService:Create(main,TweenInfo.new(0.3),{Position=UDim2.new(0.5,-140,0.5,-150), BackgroundTransparency=1}):Play()
+		wait(0.3)
 		main.Visible=false
 		logo.Visible=true
 		sliderHolder.Visible=false
@@ -274,9 +269,10 @@ end)
 
 logo.MouseButton1Click:Connect(function()
 	safeClick(function()
-		main.Visible=true
 		logo.Visible=false
 		sliderHolder.Visible=true
+		main.Visible=true
+		TweenService:Create(main,TweenInfo.new(0.3),{Position=UDim2.new(0.5,-140,0.5,-130), BackgroundTransparency=0}):Play()
 	end)
 end)
 
@@ -287,7 +283,7 @@ close.MouseButton1Click:Connect(function()
 end)
 
 ------------------------------------------------
--- DRAG HP + PC + LOGO
+-- DRAG HP + PC STABLE
 ------------------------------------------------
 local dragging=false
 local dragStart,startPos
@@ -303,7 +299,9 @@ local function dragUpdate(input)
 		)
 	end
 end
+
 titleBar.InputBegan:Connect(function(input)
+	if not main.Visible then return end
 	if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
 		dragging=true
 		dragStart=input.Position
@@ -311,6 +309,7 @@ titleBar.InputBegan:Connect(function(input)
 		dragTarget=main
 	end
 end)
+
 logo.InputBegan:Connect(function(input)
 	if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
 		dragging=true
@@ -319,11 +318,11 @@ logo.InputBegan:Connect(function(input)
 		dragTarget=logo
 	end
 end)
+
 UIS.InputChanged:Connect(function(input)
-	if dragging and (input.UserInputType==Enum.UserInputType.MouseMovement or input.UserInputType==Enum.UserInputType.Touch) then
-		dragUpdate(input)
-	end
+	if dragging and dragTarget then dragUpdate(input) end
 end)
+
 UIS.InputEnded:Connect(function(input)
 	if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
 		dragging=false
