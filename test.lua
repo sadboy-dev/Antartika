@@ -1,107 +1,137 @@
---// Simple Executor GUI
---// Author: ChatGPT
+--// DELTA EXECUTOR GUI FIX
 
 -- Services
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local PlayerGui = player:WaitForChild("PlayerGui")
+local UIS = game:GetService("UserInputService")
+
+-- Parent GUI (DELTA FIX)
+local parentGui = gethui and gethui() or game:GetService("CoreGui")
 
 -- ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "ExecutorGUI"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = PlayerGui
+ScreenGui.Name = "DeltaGUI"
+ScreenGui.Parent = parentGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 -- Main Frame
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 350, 0, 300)
 MainFrame.Position = UDim2.new(0.5, -175, 0.5, -150)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 MainFrame.BorderSizePixel = 0
 MainFrame.Parent = ScreenGui
-MainFrame.Active = true
-MainFrame.Draggable = true
 
--- Corner
-local Corner = Instance.new("UICorner", MainFrame)
-Corner.CornerRadius = UDim.new(0, 10)
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
 
 -- Title Bar
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1, 0, 0, 40)
+TitleBar.BackgroundTransparency = 1
+TitleBar.Parent = MainFrame
+
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, -80, 0, 40)
+Title.Size = UDim2.new(1, -80, 1, 0)
 Title.Position = UDim2.new(0, 10, 0, 0)
-Title.Text = "Executor GUI"
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Text = "Delta Executor GUI"
+Title.TextColor3 = Color3.fromRGB(255,255,255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 16
 Title.BackgroundTransparency = 1
-Title.TextXAlignment = Left
-Title.Parent = MainFrame
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = TitleBar
 
 -- Close Button
-local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-CloseBtn.Position = UDim2.new(1, -35, 0, 5)
-CloseBtn.Text = "X"
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.TextSize = 14
-CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(180, 50, 50)
-CloseBtn.Parent = MainFrame
-Instance.new("UICorner", CloseBtn)
+local Close = Instance.new("TextButton")
+Close.Size = UDim2.new(0, 30, 0, 30)
+Close.Position = UDim2.new(1, -35, 0, 5)
+Close.Text = "X"
+Close.Font = Enum.Font.GothamBold
+Close.TextSize = 14
+Close.TextColor3 = Color3.new(1,1,1)
+Close.BackgroundColor3 = Color3.fromRGB(170, 50, 50)
+Close.Parent = TitleBar
+Instance.new("UICorner", Close)
 
 -- Minimize Button
-local MinBtn = Instance.new("TextButton")
-MinBtn.Size = UDim2.new(0, 30, 0, 30)
-MinBtn.Position = UDim2.new(1, -70, 0, 5)
-MinBtn.Text = "-"
-MinBtn.Font = Enum.Font.GothamBold
-MinBtn.TextSize = 18
-MinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-MinBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-MinBtn.Parent = MainFrame
-Instance.new("UICorner", MinBtn)
+local Min = Instance.new("TextButton")
+Min.Size = UDim2.new(0, 30, 0, 30)
+Min.Position = UDim2.new(1, -70, 0, 5)
+Min.Text = "-"
+Min.Font = Enum.Font.GothamBold
+Min.TextSize = 18
+Min.TextColor3 = Color3.new(1,1,1)
+Min.BackgroundColor3 = Color3.fromRGB(70,70,70)
+Min.Parent = TitleBar
+Instance.new("UICorner", Min)
 
 -- Button Holder
-local ButtonFrame = Instance.new("Frame")
-ButtonFrame.Size = UDim2.new(1, -20, 1, -60)
-ButtonFrame.Position = UDim2.new(0, 10, 0, 50)
-ButtonFrame.BackgroundTransparency = 1
-ButtonFrame.Parent = MainFrame
+local Holder = Instance.new("Frame")
+Holder.Size = UDim2.new(1, -20, 1, -60)
+Holder.Position = UDim2.new(0, 10, 0, 50)
+Holder.BackgroundTransparency = 1
+Holder.Parent = MainFrame
 
 -- Grid Layout
 local Grid = Instance.new("UIGridLayout")
 Grid.CellSize = UDim2.new(0, 150, 0, 50)
 Grid.CellPadding = UDim2.new(0, 10, 0, 10)
-Grid.HorizontalAlignment = Center
-Grid.VerticalAlignment = Center
-Grid.Parent = ButtonFrame
+Grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+Grid.VerticalAlignment = Enum.VerticalAlignment.Center
+Grid.Parent = Holder
 
--- Create 6 Buttons
+-- Buttons
 for i = 1, 6 do
 	local btn = Instance.new("TextButton")
-	btn.Text = "Button " .. i
+	btn.Text = "Button "..i
 	btn.Font = Enum.Font.Gotham
 	btn.TextSize = 14
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	btn.Parent = ButtonFrame
+	btn.TextColor3 = Color3.new(1,1,1)
+	btn.BackgroundColor3 = Color3.fromRGB(45,45,45)
+	btn.Parent = Holder
 	Instance.new("UICorner", btn)
 
 	btn.MouseButton1Click:Connect(function()
-		print("Button " .. i .. " clicked")
+		print("Button "..i.." pressed")
 	end)
 end
 
--- Minimize Function
+-- Minimize Logic
 local minimized = false
-MinBtn.MouseButton1Click:Connect(function()
+Min.MouseButton1Click:Connect(function()
 	minimized = not minimized
-	ButtonFrame.Visible = not minimized
-	MainFrame.Size = minimized and UDim2.new(0, 350, 0, 50) or UDim2.new(0, 350, 0, 300)
+	Holder.Visible = not minimized
+	MainFrame.Size = minimized and UDim2.new(0,350,0,40) or UDim2.new(0,350,0,300)
 end)
 
--- Close Function
-CloseBtn.MouseButton1Click:Connect(function()
+-- Close Logic
+Close.MouseButton1Click:Connect(function()
 	ScreenGui:Destroy()
+end)
+
+-- Drag System (DELTA FIX)
+local dragging, dragStart, startPos
+
+TitleBar.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = MainFrame.Position
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		MainFrame.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
+end)
+
+UIS.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
 end)
