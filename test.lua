@@ -1,4 +1,5 @@
---// DELTA ANDROID - NEON TELEPORT GUI (FULL SAFE VERSION)
+--// DELTA ANDROID - NEON TELEPORT GUI
+--// COOLDOWN DIMULAI SAAT SCRIPT DIJALANKAN
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -6,214 +7,171 @@ local player = Players.LocalPlayer
 local parentGui = gethui and gethui() or game.CoreGui
 
 -- =====================================================
--- SAFE TELEPORT (ANTI DAMAGE + ANTI JATUH + ANTI VOID)
+-- SAFE TELEPORT (ANTI DAMAGE + ANTI JATUH)
 -- =====================================================
 local function safeTeleport(cf)
 	local char = player.Character or player.CharacterAdded:Wait()
 	local hrp = char:WaitForChild("HumanoidRootPart")
 	local hum = char:WaitForChild("Humanoid")
 
-	-- Raycast cari tanah
 	local rayParams = RaycastParams.new()
 	rayParams.FilterDescendantsInstances = {char}
 	rayParams.FilterType = Enum.RaycastFilterType.Blacklist
 
 	local origin = Vector3.new(cf.X, cf.Y + 60, cf.Z)
-	local direction = Vector3.new(0, -500, 0)
-	local result = workspace:Raycast(origin, direction, rayParams)
+	local result = workspace:Raycast(origin, Vector3.new(0,-500,0), rayParams)
 
 	local finalY = cf.Y
 	if result then
 		finalY = result.Position.Y + 4
 	end
 
-	-- Freeze total
 	hrp.Anchored = true
 	hum:ChangeState(Enum.HumanoidStateType.Physics)
-
-	-- Teleport
 	hrp.CFrame = CFrame.new(cf.X, finalY, cf.Z)
 
-	-- Stabilkan
 	task.wait(0.25)
 	hum:ChangeState(Enum.HumanoidStateType.GettingUp)
 	hrp.Anchored = false
 end
 
--- Disable ragdoll & fall (extra safety)
 player.CharacterAdded:Connect(function(char)
 	local hum = char:WaitForChild("Humanoid")
-	hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
-	hum:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+	hum:SetStateEnabled(Enum.HumanoidStateType.FallingDown,false)
+	hum:SetStateEnabled(Enum.HumanoidStateType.Ragdoll,false)
 end)
 
 -- =====================================================
--- TELEPORT DATA
+-- TELEPORT DATA + COOLDOWN (DETIK)
 -- =====================================================
 local Teleports = {
-	C1     = CFrame.new(-3640.67, 229.43, 289.87),
-	C2     = CFrame.new(1860.78, 105.82, -235.41),
-	Vinson = CFrame.new(3731.35, 1508.92, -184.39),
-	C3     = CFrame.new(5709.64, 320.89, 628.29),
-	C4     = CFrame.new(8992.34, 595.60, 103.32),
-	Run    = CFrame.new(10113.24, 552.00, 35.11),
+	C1     = {cf=CFrame.new(-3640.67,229.43,289.87), cd=80},
+	C2     = {cf=CFrame.new(1860.78,105.82,-235.41), cd=60},
+	Vinson = {cf=CFrame.new(3731.35,1508.92,-184.39), cd=120},
+	C3     = {cf=CFrame.new(5709.64,320.89,628.29), cd=90},
+	C4     = {cf=CFrame.new(8992.34,595.60,103.32), cd=75},
+	Run    = {cf=CFrame.new(10113.24,552,35.11), cd=45},
 }
 
 -- =====================================================
 -- GUI
 -- =====================================================
-local gui = Instance.new("ScreenGui")
-gui.Name = "NeonTeleportGUI"
-gui.Parent = parentGui
+local gui = Instance.new("ScreenGui", parentGui)
 gui.ResetOnSpawn = false
 
-local main = Instance.new("Frame")
-main.Size = UDim2.new(0, 300, 0, 250)
-main.Position = UDim2.new(0.5, -150, 0.5, -125)
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.new(0,300,0,250)
+main.Position = UDim2.new(0.5,-150,0.5,-125)
 main.BackgroundColor3 = Color3.fromRGB(15,15,20)
-main.BorderSizePixel = 0
-main.Parent = gui
-Instance.new("UICorner", main).CornerRadius = UDim.new(0, 6)
+Instance.new("UICorner",main).CornerRadius = UDim.new(0,6)
 
-local stroke = Instance.new("UIStroke", main)
-stroke.Thickness = 2
-stroke.Color = Color3.fromRGB(0,255,255)
-stroke.Transparency = 0.25
-
--- Title Bar
-local titleBar = Instance.new("Frame")
+local titleBar = Instance.new("Frame", main)
 titleBar.Size = UDim2.new(1,0,0,38)
 titleBar.BackgroundColor3 = Color3.fromRGB(20,20,30)
 titleBar.Active = true
-titleBar.BackgroundTransparency = 0.05
-titleBar.Parent = main
+Instance.new("UICorner",titleBar).CornerRadius = UDim.new(0,6)
 
-local title = Instance.new("TextLabel")
+local title = Instance.new("TextLabel", titleBar)
 title.Size = UDim2.new(1,-80,1,0)
 title.Position = UDim2.new(0,10,0,0)
 title.Text = "NEON TELEPORT"
-title.TextColor3 = Color3.fromRGB(0,255,255)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 15
+title.TextColor3 = Color3.fromRGB(0,255,255)
 title.BackgroundTransparency = 1
 title.TextXAlignment = Enum.TextXAlignment.Left
-title.Parent = titleBar
 
--- Close
-local close = Instance.new("TextButton")
-close.Size = UDim2.new(0,28,0,28)
-close.Position = UDim2.new(1,-32,0,5)
-close.Text = "X"
-close.Font = Enum.Font.GothamBold
-close.TextSize = 13
-close.TextColor3 = Color3.new(1,1,1)
-close.BackgroundColor3 = Color3.fromRGB(200,60,80)
-close.Parent = titleBar
-Instance.new("UICorner", close).CornerRadius = UDim.new(0,6)
-
--- Minimize
-local min = Instance.new("TextButton")
-min.Size = UDim2.new(0,28,0,28)
-min.Position = UDim2.new(1,-64,0,5)
-min.Text = "-"
-min.Font = Enum.Font.GothamBold
-min.TextSize = 17
-min.TextColor3 = Color3.fromRGB(0,0,0)
-min.BackgroundColor3 = Color3.fromRGB(0,255,255)
-min.Parent = titleBar
-Instance.new("UICorner", min).CornerRadius = UDim.new(0,6)
-
--- Holder
-local holder = Instance.new("Frame")
+local holder = Instance.new("Frame", main)
 holder.Size = UDim2.new(1,0,1,-38)
 holder.Position = UDim2.new(0,0,0,38)
 holder.BackgroundTransparency = 1
-holder.Parent = main
 
 -- =====================================================
--- BUTTON CREATOR
+-- COOLDOWN SYSTEM (START DI AWAL)
 -- =====================================================
-local function createButton(name, x, y)
-	local btn = Instance.new("TextButton")
+local startTime = tick()
+local lastUse = {}
+
+for name in pairs(Teleports) do
+	lastUse[name] = startTime -- SEMUA DIMULAI COOLDOWN
+end
+
+local function createButton(name,x,y)
+	local data = Teleports[name]
+
+	local btn = Instance.new("TextButton", holder)
 	btn.Size = UDim2.new(0,130,0,42)
 	btn.Position = UDim2.new(0,x,0,y)
-	btn.Text = name
 	btn.Font = Enum.Font.Gotham
 	btn.TextSize = 13
-	btn.TextColor3 = Color3.fromRGB(0,255,255)
 	btn.BackgroundColor3 = Color3.fromRGB(25,25,35)
-	btn.Parent = holder
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0,8)
+	btn.TextColor3 = Color3.fromRGB(255,80,80)
+	Instance.new("UICorner",btn).CornerRadius = UDim.new(0,8)
 
-	local s = Instance.new("UIStroke", btn)
-	s.Color = Color3.fromRGB(120,0,255)
-	s.Thickness = 1.5
+	task.spawn(function()
+		while true do
+			local remain = data.cd - (tick() - lastUse[name])
+			if remain <= 0 then
+				btn.Text = name
+				btn.TextColor3 = Color3.fromRGB(0,255,255)
+				break
+			else
+				btn.Text = "WAIT ("..math.ceil(remain).."s)"
+			end
+			task.wait(1)
+		end
+	end)
 
 	btn.MouseButton1Click:Connect(function()
-		local cf = Teleports[name]
-		if cf then
-			safeTeleport(cf)
-		end
+		if tick() - lastUse[name] < data.cd then return end
+		lastUse[name] = tick()
+		safeTeleport(data.cf)
+
+		task.spawn(function()
+			while true do
+				local remain = data.cd - (tick() - lastUse[name])
+				if remain <= 0 then
+					btn.Text = name
+					btn.TextColor3 = Color3.fromRGB(0,255,255)
+					break
+				else
+					btn.Text = "WAIT ("..math.ceil(remain).."s)"
+					btn.TextColor3 = Color3.fromRGB(255,80,80)
+				end
+				task.wait(1)
+			end
+		end)
 	end)
 end
 
--- Layout tombol
-local padX, padY, gapY = 15, 18, 55
-local leftX = padX
-local rightX = main.Size.X.Offset - 130 - padX
-
+-- Layout
+local padX,padY,gapY = 15,18,55
+local leftX,rightX = padX,300-130-padX
 local names = {"C1","C2","Vinson","C3","C4","Run"}
-local i = 1
-for row = 0, 2 do
-	createButton(names[i], leftX,  padY + (gapY * row)); i += 1
-	createButton(names[i], rightX, padY + (gapY * row)); i += 1
+local i=1
+for row=0,2 do
+	createButton(names[i],leftX,padY+gapY*row); i+=1
+	createButton(names[i],rightX,padY+gapY*row); i+=1
 end
-
--- Minimize
-local minimized = false
-min.MouseButton1Click:Connect(function()
-	minimized = not minimized
-	holder.Visible = not minimized
-	main.Size = minimized and UDim2.new(0,300,0,38) or UDim2.new(0,300,0,250)
-end)
-
--- Close
-close.MouseButton1Click:Connect(function()
-	gui:Destroy()
-end)
 
 -- =====================================================
 -- DRAG (TOUCH + MOUSE)
 -- =====================================================
 local dragging, dragStart, startPos
-
-local function updateDrag(input)
-	local delta = input.Position - dragStart
-	main.Position = UDim2.new(
-		startPos.X.Scale, startPos.X.Offset + delta.X,
-		startPos.Y.Scale, startPos.Y.Offset + delta.Y
-	)
-end
-
 titleBar.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.Touch
-	or input.UserInputType == Enum.UserInputType.MouseButton1 then
-		dragging = true
-		dragStart = input.Position
-		startPos = main.Position
+	if input.UserInputType==Enum.UserInputType.Touch or input.UserInputType==Enum.UserInputType.MouseButton1 then
+		dragging=true
+		dragStart=input.Position
+		startPos=main.Position
 		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
+			if input.UserInputState==Enum.UserInputState.End then dragging=false end
 		end)
 	end
 end)
 
 UIS.InputChanged:Connect(function(input)
-	if dragging and (
-		input.UserInputType == Enum.UserInputType.Touch
-		or input.UserInputType == Enum.UserInputType.MouseMovement
-	) then
-		updateDrag(input)
+	if dragging and (input.UserInputType==Enum.UserInputType.Touch or input.UserInputType==Enum.UserInputType.MouseMovement) then
+		local delta=input.Position-dragStart
+		main.Position=UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y)
 	end
 end)
