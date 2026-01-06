@@ -236,7 +236,7 @@ cp3.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        safeTeleport(root, CFrame.new(5876.31, 326.54, -220.64))
+        safeTeleport(root, CFrame.new(5962.76, 321.27, 41.44))
     end
  end)
 
