@@ -178,14 +178,35 @@ local function recalcFrame()
     Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
 end
 
--- hubungkan perubahan teks / visibilitas ke recalcFrame
-for _, child in ipairs(Frame:GetChildren()) do
-    if child:IsA("TextLabel") or child:IsA("TextButton") then
-        child:GetPropertyChangedSignal("Text"):Connect(recalcFrame)
-        child:GetPropertyChangedSignal("Visible"):Connect(recalcFrame)
+-- Hubungkan perubahan teks / visibilitas hanya untuk elemen yang relevan
+local layoutNames = { "up", "down", "onof", "TextLabel", "plus", "speed", "mine" }
+local excludedNames = { Close = true, minimize = true, minimize2 = true }
+local function isLayoutChild(obj)
+    if not obj or not obj.Name then return false end
+    for _, name in ipairs(layoutNames) do
+        if obj.Name == name then return true end
     end
+    return false
 end
-Frame.ChildAdded:Connect(function() wait(); recalcFrame() end)
+local function connectLayoutSignals(obj)
+    if not obj then return end
+    if not (obj:IsA("TextLabel") or obj:IsA("TextButton")) then return end
+    if not isLayoutChild(obj) then return end
+    obj:GetPropertyChangedSignal("Text"):Connect(recalcFrame)
+    obj:GetPropertyChangedSignal("Visible"):Connect(recalcFrame)
+end
+
+-- hubungkan untuk anak yang sudah ada
+for _, name in ipairs(layoutNames) do
+    local child = Frame:FindFirstChild(name)
+    if child then connectLayoutSignals(child) end
+end
+
+Frame.ChildAdded:Connect(function(child)
+    wait()
+    connectLayoutSignals(child)
+    recalcFrame()
+end)
 Frame.ChildRemoved:Connect(function() wait(); recalcFrame() end)
 
 -- jalankan sekali di awal
