@@ -1,7 +1,7 @@
 local main = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
-local cp1 = Instance.new("TextButton")
-local cp2 = Instance.new("TextButton")
+local up = Instance.new("TextButton")
+local down = Instance.new("TextButton")
 local onof = Instance.new("TextButton")
 local TextLabel = Instance.new("TextLabel")
 local plus = Instance.new("TextButton")
@@ -22,26 +22,24 @@ Frame.BorderColor3 = Color3.fromRGB(103, 221, 213)
 Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
 Frame.Size = UDim2.new(0, 190, 0, 57)
  
-cp1.Name = "cp1"
-cp1.Parent = Frame
-cp1.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-cp1.Size = UDim2.new(0, 56, 0, 28)
-cp1.Font = Enum.Font.SourceSans
-cp1.Text = "CP1"
-cp1.TextColor3 = Color3.fromRGB(0, 0, 0)
-cp1.TextScaled = true
-cp1.TextSize = 14.000
-cp1.TextWrapped = true
+up.Name = "up"
+up.Parent = Frame
+up.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
+up.Size = UDim2.new(0, 44, 0, 28)
+up.Font = Enum.Font.SourceSans
+up.Text = "UP"
+up.TextColor3 = Color3.fromRGB(0, 0, 0)
+up.TextSize = 14.000
  
-cp2.Name = "cp2"
-cp2.Parent = Frame
-cp2.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-cp2.Position = UDim2.new(0, 0, 0.491228074, 0)
-cp2.Size = UDim2.new(0, 100, 0, 28)
-cp2.Font = Enum.Font.SourceSans
-cp2.Text = "CP2"
-cp2.TextColor3 = Color3.fromRGB(0, 0, 0)
-cp2.TextSize = 14.000
+down.Name = "down"
+down.Parent = Frame
+down.BackgroundColor3 = Color3.fromRGB(215, 255, 121)
+down.Position = UDim2.new(0, 0, 0.491228074, 0)
+down.Size = UDim2.new(0, 44, 0, 28)
+down.Font = Enum.Font.SourceSans
+down.Text = "DOWN"
+down.TextColor3 = Color3.fromRGB(0, 0, 0)
+down.TextSize = 14.000
  
 onof.Name = "onof"
 onof.Parent = Frame
@@ -58,7 +56,7 @@ TextLabel.BackgroundColor3 = Color3.fromRGB(242, 60, 255)
 TextLabel.Position = UDim2.new(0.469327301, 0, 0, 0)
 TextLabel.Size = UDim2.new(0, 100, 0, 28)
 TextLabel.Font = Enum.Font.SourceSans
-TextLabel.Text = "Jriik89"
+TextLabel.Text = "Teleport by:Jriik89"
 TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 TextLabel.TextScaled = true
 TextLabel.TextSize = 14.000
@@ -129,7 +127,70 @@ mini2.Position = UDim2.new(0, 44, -1, 57)
 mini2.Visible = false
  
 speeds = 1
- 
+
+-- Fungsi untuk menyesuaikan ukuran Frame berdasarkan ukuran teks dan menempatkannya di tengah layar
+local TextService = game:GetService("TextService")
+local function measureText(obj)
+    local text = tostring(obj.Text or "")
+    local textSize = obj.TextSize or 14
+    local font = obj.Font or Enum.Font.SourceSans
+    local bounds = TextService:GetTextSize(text, textSize, font, 1000)
+    return bounds
+end
+
+local function recalcFrame()
+    local padding = 8
+    local spacing = 6
+    local top = {}
+    local bottom = {}
+    for _, child in ipairs(Frame:GetChildren()) do
+        if child:IsA("GuiObject") and child.Visible then
+            local y = 0
+            if child.Position then y = child.Position.Y.Scale end
+            if y < 0.25 then table.insert(top, child) else table.insert(bottom, child) end
+        end
+    end
+    local function rowSize(children)
+        local totalW = 0
+        local maxH = 0
+        for i, c in ipairs(children) do
+            local w,h = 0,0
+            if c:IsA("TextLabel") or c:IsA("TextButton") then
+                local bounds = measureText(c)
+                w = bounds.X + 10
+                h = bounds.Y + 6
+            else
+                w = c.AbsoluteSize.X
+                h = c.AbsoluteSize.Y
+            end
+            totalW = totalW + w
+            if i>1 then totalW = totalW + spacing end
+            if h > maxH then maxH = h end
+        end
+        return totalW, maxH
+    end
+    local w1,h1 = rowSize(top)
+    local w2,h2 = rowSize(bottom)
+    local frameW = math.max(w1,w2, 120) + padding*2
+    local frameH = h1 + h2 + padding*3
+    Frame.Size = UDim2.new(0, frameW, 0, frameH)
+    Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+    Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+end
+
+-- hubungkan perubahan teks / visibilitas ke recalcFrame
+for _, child in ipairs(Frame:GetChildren()) do
+    if child:IsA("TextLabel") or child:IsA("TextButton") then
+        child:GetPropertyChangedSignal("Text"):Connect(recalcFrame)
+        child:GetPropertyChangedSignal("Visible"):Connect(recalcFrame)
+    end
+end
+Frame.ChildAdded:Connect(function() wait(); recalcFrame() end)
+Frame.ChildRemoved:Connect(function() wait(); recalcFrame() end)
+
+-- jalankan sekali di awal
+recalcFrame()
+
 local speaker = game:GetService("Players").LocalPlayer
  
 local chr = game.Players.LocalPlayer.Character
@@ -345,8 +406,8 @@ end)
  
 local tis
  
-cp1.MouseButton1Down:connect(function()
-    tis = cp1.MouseEnter:connect(function()
+up.MouseButton1Down:connect(function()
+    tis = up.MouseEnter:connect(function()
         while tis do
             wait()
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,1,0)
@@ -354,7 +415,7 @@ cp1.MouseButton1Down:connect(function()
     end)
 end)
  
-cp1.MouseLeave:connect(function()
+up.MouseLeave:connect(function()
     if tis then
         tis:Disconnect()
         tis = nil
@@ -363,8 +424,8 @@ end)
  
 local dis
  
-cp2.MouseButton1Down:connect(function()
-    dis = cp2.MouseEnter:connect(function()
+down.MouseButton1Down:connect(function()
+    dis = down.MouseEnter:connect(function()
         while dis do
             wait()
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,-1,0)
@@ -372,7 +433,7 @@ cp2.MouseButton1Down:connect(function()
     end)
 end)
  
-cp2.MouseLeave:connect(function()
+down.MouseLeave:connect(function()
     if dis then
         dis:Disconnect()
         dis = nil
@@ -450,8 +511,8 @@ closebutton.MouseButton1Click:Connect(function()
 end)
  
 mini.MouseButton1Click:Connect(function()
-    cp1.Visible = false
-    cp2.Visible = false
+    up.Visible = false
+    down.Visible = false
     onof.Visible = false
     plus.Visible = false
     speed.Visible = false
@@ -463,8 +524,8 @@ mini.MouseButton1Click:Connect(function()
 end)
  
 mini2.MouseButton1Click:Connect(function()
-    cp1.Visible = true
-    cp2.Visible = true
+    up.Visible = true
+    down.Visible = true
     onof.Visible = true
     plus.Visible = true
     speed.Visible = true
