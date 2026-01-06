@@ -1,5 +1,5 @@
 --// DELTA ANDROID - NEON TELEPORT GUI
---// SEQUENTIAL CHECKPOINT COOLDOWN SYSTEM
+--// SEQUENTIAL CHECKPOINT SYSTEM (FIXED VERSION)
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -42,45 +42,22 @@ player.CharacterAdded:Connect(function(char)
 end)
 
 -- =====================================================
--- CHECKPOINT DATA (URUTAN + COOLDOWN)
+-- CHECKPOINT DATA (URUTAN)
 -- =====================================================
 local Checkpoints = {
-	{
-		name = "C1",
-		cf = CFrame.new(-3640.67,229.43,289.87),
-		cd = 80
-	},
-	{
-		name = "C2",
-		cf = CFrame.new(1860.78,105.82,-235.41),
-		cd = 60
-	},
-	{
-		name = "Vinson",
-		cf = CFrame.new(3731.35,1508.92,-184.39),
-		cd = 120
-	},
-	{
-		name = "C3",
-		cf = CFrame.new(5709.64,320.89,628.29),
-		cd = 90
-	},
-	{
-		name = "C4",
-		cf = CFrame.new(8992.34,595.60,103.32),
-		cd = 75
-	},
-	{
-		name = "Run",
-		cf = CFrame.new(10113.24,552,35.11),
-		cd = 45
-	}
+	{name="C1",     cf=CFrame.new(-3640.67,229.43,289.87), cd=80},
+	{name="C2",     cf=CFrame.new(1860.78,105.82,-235.41), cd=60},
+	{name="Vinson", cf=CFrame.new(3731.35,1508.92,-184.39), cd=120},
+	{name="C3",     cf=CFrame.new(5709.64,320.89,628.29), cd=90},
+	{name="C4",     cf=CFrame.new(8992.34,595.60,103.32), cd=75},
+	{name="Run",    cf=CFrame.new(10113.24,552,35.11), cd=45},
 }
 
 -- =====================================================
 -- GUI
 -- =====================================================
-local gui = Instance.new("ScreenGui", parentGui)
+local gui = Instance.new("ScreenGui")
+gui.Parent = parentGui
 gui.ResetOnSpawn = false
 
 local main = Instance.new("Frame", gui)
@@ -111,19 +88,19 @@ holder.Position = UDim2.new(0,0,0,38)
 holder.BackgroundTransparency = 1
 
 -- =====================================================
--- BUTTON SYSTEM (SEQUENTIAL)
+-- BUTTON SYSTEM (SEQUENTIAL - FIX)
 -- =====================================================
 local buttons = {}
 local currentIndex = 1
 
-local function lockButton(btn, text)
-	btn.Text = text or "LOCKED"
+local function lock(btn, txt)
+	btn.Text = txt or "LOCKED"
 	btn.TextColor3 = Color3.fromRGB(120,120,120)
 	btn.AutoButtonColor = false
 end
 
-local function readyButton(btn, name)
-	btn.Text = name
+local function ready(btn, txt)
+	btn.Text = txt
 	btn.TextColor3 = Color3.fromRGB(0,255,255)
 	btn.AutoButtonColor = true
 end
@@ -131,25 +108,24 @@ end
 local function startCooldown(index)
 	local data = Checkpoints[index]
 	local btn = buttons[index]
+	if not data or not btn then return end
 
-	lockButton(btn, "WAIT ("..data.cd.."s)")
+	lock(btn, "WAIT ("..data.cd.."s)")
 
 	task.spawn(function()
 		local start = tick()
-		while true do
-			local remain = data.cd - (tick() - start)
-			if remain <= 0 then
-				readyButton(btn, data.name)
-				break
-			end
-			btn.Text = "WAIT ("..math.ceil(remain).."s)"
+		while tick() - start < data.cd do
+			local left = math.ceil(data.cd - (tick() - start))
+			btn.Text = "WAIT ("..left.."s)"
 			task.wait(1)
 		end
+		ready(btn, data.name)
 	end)
 end
 
 local function createButton(index, x, y)
 	local data = Checkpoints[index]
+	if not data then return end
 
 	local btn = Instance.new("TextButton", holder)
 	btn.Size = UDim2.new(0,130,0,42)
@@ -159,31 +135,36 @@ local function createButton(index, x, y)
 	btn.BackgroundColor3 = Color3.fromRGB(25,25,35)
 	Instance.new("UICorner",btn).CornerRadius = UDim.new(0,8)
 
-	lockButton(btn)
+	lock(btn)
 
 	btn.MouseButton1Click:Connect(function()
 		if index ~= currentIndex then return end
 		if btn.Text ~= data.name then return end
 
 		safeTeleport(data.cf)
-		lockButton(btn)
+		lock(btn)
 
 		currentIndex += 1
-		if Checkpoints[currentIndex] then
-			startCooldown(currentIndex)
-		end
+		startCooldown(currentIndex)
 	end)
 
 	buttons[index] = btn
 end
 
--- Layout
-local padX,padY,gapY = 15,18,55
-local leftX,rightX = padX,300-130-padX
-local i=1
-for row=0,2 do
-	createButton(i,leftX,padY+gapY*row); i+=1
-	createButton(i,rightX,padY+gapY*row); i+=1
+-- Layout AMAN
+local padX, padY, gapY = 15, 18, 55
+local leftX, rightX = padX, 300 - 130 - padX
+
+local idx = 1
+for row = 0,2 do
+	if Checkpoints[idx] then
+		createButton(idx, leftX, padY + gapY * row)
+		idx += 1
+	end
+	if Checkpoints[idx] then
+		createButton(idx, rightX, padY + gapY * row)
+		idx += 1
+	end
 end
 
 -- START: hanya C1 cooldown
@@ -199,4 +180,17 @@ titleBar.InputBegan:Connect(function(input)
 		dragStart=input.Position
 		startPos=main.Position
 		input.Changed:Connect(function()
-			if input.UserInputState==Enum.UserInputState
+			if input.UserInputState==Enum.UserInputState.End then dragging=false end
+		end)
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if dragging and (input.UserInputType==Enum.UserInputType.Touch or input.UserInputType==Enum.UserInputType.MouseMovement) then
+		local delta=input.Position-dragStart
+		main.Position=UDim2.new(
+			startPos.X.Scale,startPos.X.Offset+delta.X,
+			startPos.Y.Scale,startPos.Y.Offset+delta.Y
+		)
+	end
+end)
