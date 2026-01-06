@@ -1,61 +1,66 @@
---// DELTA ANDROID | NEON CHECKPOINT GUI (FINAL CLEAN + PERMANENT SHIELD)
+--// DELTA SAFE | NEON GUI + PERMANENT SHIELD + FAIL-SAFE TELEPORT
 
-if game.CoreGui:FindFirstChild("NeonCheckpointGui") then
-	game.CoreGui.NeonCheckpointGui:Destroy()
-end
+-- CLEAN OLD GUI
+pcall(function()
+	if game.CoreGui:FindFirstChild("NeonCheckpointGui") then
+		game.CoreGui.NeonCheckpointGui:Destroy()
+	end
+end)
 
 -- SERVICES
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
-local parentGui = gethui and gethui() or game.CoreGui
 
--- =====================================================
--- SHIELD CONFIG
--- =====================================================
+-- GUI PARENT (DELTA SAFE)
+local parentGui = game.CoreGui
+pcall(function()
+	if gethui then
+		parentGui = gethui()
+	end
+end)
+
+------------------------------------------------
+-- SHIELD CONFIG (AUTO ON)
+------------------------------------------------
 local SHIELD_HP = 1000
 local shieldEnabled = true
-local shieldConnections = {}
+local shieldConnection = nil
 
 local function applyShield(character)
 	if not shieldEnabled then return end
-	local hum = character:WaitForChild("Humanoid")
+	if not character then return end
+
+	local hum = character:WaitForChild("Humanoid", 5)
+	if not hum then return end
 
 	hum.MaxHealth = SHIELD_HP
 	hum.Health = SHIELD_HP
 
-	if shieldConnections[hum] then
-		shieldConnections[hum]:Disconnect()
+	if shieldConnection then
+		shieldConnection:Disconnect()
 	end
 
-	shieldConnections[hum] = hum.HealthChanged:Connect(function(hp)
+	shieldConnection = hum.HealthChanged:Connect(function(hp)
 		if shieldEnabled and hp < SHIELD_HP then
 			hum.Health = SHIELD_HP
 		end
 	end)
 end
 
--- =====================================================
--- SAFE TELEPORT
--- =====================================================
-local function safeTeleport(cf)
-	local char = player.Character or player.CharacterAdded:Wait()
-	local hrp = char:WaitForChild("HumanoidRootPart")
-	local hum = char:WaitForChild("Humanoid")
-
-	hrp.Anchored = true
-	hum:ChangeState(Enum.HumanoidStateType.Physics)
-	hrp.CFrame = cf + Vector3.new(0,4,0)
-
-	task.wait(0.25)
-	hum:ChangeState(Enum.HumanoidStateType.GettingUp)
-	hrp.Anchored = false
+-- APPLY SHIELD IMMEDIATELY
+if player.Character then
+	applyShield(player.Character)
 end
 
--- =====================================================
+player.CharacterAdded:Connect(function(char)
+	wait(0.3)
+	applyShield(char)
+end)
+
+------------------------------------------------
 -- CHECKPOINT DATA
--- =====================================================
+------------------------------------------------
 local Checkpoints = {
 	{name="C1",cf=CFrame.new(-3640.67,229.43,289.87),cd=80},
 	{name="C2",cf=CFrame.new(1860.78,105.82,-235.41),cd=60},
@@ -65,13 +70,49 @@ local Checkpoints = {
 	{name="Run",cf=CFrame.new(10113.24,552,35.11),cd=45},
 }
 
--- =====================================================
--- GUI
--- =====================================================
-local gui = Instance.new("ScreenGui", parentGui)
+------------------------------------------------
+-- FAIL-SAFE SAFE TELEPORT
+------------------------------------------------
+local function safeTeleport(cf)
+	local char = player.Character or player.CharacterAdded:Wait()
+	local hum = char:WaitForChild("Humanoid",5)
+	local hrp = char:WaitForChild("HumanoidRootPart",5)
+	if not hum or not hrp then return end
+
+	local targetPos = cf.Position
+	local MAX_RETRY = 3
+
+	for attempt = 1, MAX_RETRY do
+		-- freeze sementara
+		hrp.Anchored = true
+		hum:ChangeState(Enum.HumanoidStateType.Physics)
+
+		-- teleport
+		hrp.CFrame = cf + Vector3.new(0,4,0)
+		wait(0.2)
+
+		-- cek berhasil atau tidak
+		local dist = (hrp.Position - targetPos).Magnitude
+		if dist < 10 then
+			break -- sukses
+		end
+	end
+
+	-- restore state
+	hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+	wait(0.05)
+	hrp.Anchored = false
+end
+
+------------------------------------------------
+-- GUI SETUP
+------------------------------------------------
+local gui = Instance.new("ScreenGui")
 gui.Name = "NeonCheckpointGui"
 gui.ResetOnSpawn = false
+gui.Parent = parentGui
 
+-- MAIN FRAME
 local main = Instance.new("Frame", gui)
 main.Size = UDim2.new(0,280,0,240)
 main.Position = UDim2.new(0.5,-140,0.5,-120)
@@ -92,7 +133,7 @@ title.TextColor3 = Color3.fromRGB(0,255,255)
 title.BackgroundTransparency = 1
 title.Size = UDim2.new(1,-90,1,0)
 title.Position = UDim2.new(0,10,0,0)
-title.TextXAlignment = Left
+title.TextXAlignment = Enum.TextXAlignment.Left
 
 -- CLOSE BUTTON
 local close = Instance.new("TextButton", titleBar)
@@ -104,7 +145,7 @@ close.Size = UDim2.new(0,26,0,26)
 close.Position = UDim2.new(1,-30,0.5,-13)
 close.BackgroundTransparency = 1
 
--- MINIMIZE
+-- MINIMIZE BUTTON
 local minimize = Instance.new("TextButton", titleBar)
 minimize.Text = "—"
 minimize.Font = Enum.Font.GothamBold
@@ -115,115 +156,34 @@ minimize.Position = UDim2.new(1,-60,0.5,-13)
 minimize.BackgroundTransparency = 1
 
 -- CONTENT
-local holder = Instance.new("Frame", main)
-holder.Position = UDim2.new(0,0,0,36)
-holder.Size = UDim2.new(1,0,1,-36)
-holder.BackgroundTransparency = 1
+local content = Instance.new("Frame", main)
+content.Position = UDim2.new(0,0,0,36)
+content.Size = UDim2.new(1,0,1,-36)
+content.BackgroundTransparency = 1
 
--- LOGO (RESTORE GUI)
+local info = Instance.new("TextLabel", content)
+info.Text = "✓ Shield Active\n✓ GUI Running\n✓ Delta Safe\n✓ Teleport Fail-Safe"
+info.Font = Enum.Font.Gotham
+info.TextSize = 13
+info.TextColor3 = Color3.fromRGB(200,200,200)
+info.BackgroundTransparency = 1
+info.Size = UDim2.new(1,0,1,0)
+
+-- LOGO RESTORE
 local logo = Instance.new("TextButton", gui)
 logo.Text = "⚡"
 logo.Font = Enum.Font.GothamBold
 logo.TextSize = 22
 logo.TextColor3 = Color3.fromRGB(0,255,255)
-logo.Size = UDim2.new(0,42,0,42)
-logo.Position = UDim2.new(0,20,0.5,-21)
+logo.Size = UDim2.new(0,44,0,44)
+logo.Position = UDim2.new(0,20,0.5,-22)
 logo.BackgroundColor3 = Color3.fromRGB(15,15,20)
 logo.Visible = false
 Instance.new("UICorner",logo).CornerRadius = UDim.new(1,0)
 
--- =====================================================
--- BUTTON SYSTEM
--- =====================================================
-local buttons = {}
-local currentIndex = 1
-
-local function lock(btn,text)
-	btn.Text = text
-	btn.TextColor3 = Color3.fromRGB(130,130,130)
-	btn.AutoButtonColor = false
-end
-
-local function ready(btn,text)
-	btn.Text = text
-	btn.TextColor3 = Color3.fromRGB(0,255,255)
-	btn.AutoButtonColor = true
-end
-
-local function startCooldown(i)
-	local d = Checkpoints[i]
-	local b = buttons[i]
-	if not d or not b then return end
-
-	task.spawn(function()
-		for t=d.cd,1,-1 do
-			b.Text = "WAIT ("..t.."s)"
-			task.wait(1)
-		end
-		ready(b,d.name)
-	end)
-end
-
-local function makeButton(i,x,y)
-	local d = Checkpoints[i]
-	local b = Instance.new("TextButton", holder)
-	b.Size = UDim2.new(0,120,0,38)
-	b.Position = UDim2.new(0,x,0,y)
-	b.BackgroundColor3 = Color3.fromRGB(25,25,35)
-	b.Font = Enum.Font.Gotham
-	b.TextSize = 12
-	Instance.new("UICorner",b).CornerRadius = UDim.new(0,8)
-	lock(b,"LOCKED")
-
-	b.MouseButton1Click:Connect(function()
-		if i ~= currentIndex or b.Text ~= d.name then return end
-		safeTeleport(d.cf)
-		lock(b,"DONE")
-		currentIndex += 1
-		if currentIndex <= #Checkpoints then
-			startCooldown(currentIndex)
-		end
-	end)
-
-	buttons[i] = b
-end
-
--- LAYOUT
-local px,py,gy = 14,14,52
-local lx,rx = px,280-120-px
-local idx=1
-for r=0,2 do
-	makeButton(idx,lx,py+r*gy); idx+=1
-	makeButton(idx,rx,py+r*gy); idx+=1
-end
-
--- INIT
-local function syncProgress()
-	for i,btn in ipairs(buttons) do
-		if i == 1 then
-			lock(btn,"WAIT")
-		else
-			lock(btn,"LOCKED")
-		end
-	end
-	startCooldown(1)
-end
-
-syncProgress()
-
--- CHARACTER EVENTS
-if player.Character then
-	applyShield(player.Character)
-end
-
-player.CharacterAdded:Connect(function(char)
-	applyShield(char)
-	syncProgress()
-end)
-
--- =====================================================
+------------------------------------------------
 -- MINIMIZE / RESTORE
--- =====================================================
+------------------------------------------------
 minimize.MouseButton1Click:Connect(function()
 	main.Visible = false
 	logo.Visible = true
@@ -234,35 +194,45 @@ logo.MouseButton1Click:Connect(function()
 	logo.Visible = false
 end)
 
--- CLOSE (MATIKAN SHIELD)
 close.MouseButton1Click:Connect(function()
 	shieldEnabled = false
-	if player.Character then
-		local hum = player.Character:FindFirstChild("Humanoid")
-		if hum and shieldConnections[hum] then
-			shieldConnections[hum]:Disconnect()
-		end
+	if shieldConnection then
+		shieldConnection:Disconnect()
 	end
 	gui:Destroy()
-end
+end)
 
--- =====================================================
--- DRAG
--- =====================================================
-local dragging,ds,sp
-titleBar.InputBegan:Connect(function(i)
-	if i.UserInputType==Enum.UserInputType.MouseButton1 then
-		dragging=true ds=i.Position sp=main.Position
+------------------------------------------------
+-- DRAG SUPPORT
+------------------------------------------------
+local dragging = false
+local dragStart, startPos
+
+titleBar.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = main.Position
 	end
 end)
 
-UIS.InputChanged:Connect(function(i)
-	if dragging and i.UserInputType==Enum.UserInputType.MouseMovement then
-		local d=i.Position-ds
-		main.Position=UDim2.new(sp.X.Scale,sp.X.Offset+d.X,sp.Y.Scale,sp.Y.Offset+d.Y)
+UIS.InputChanged:Connect(function(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		main.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
 	end
 end)
 
 UIS.InputEnded:Connect(function()
-	dragging=false
+	dragging = false
 end)
+
+------------------------------------------------
+-- CHECKPOINT BUTTON SYSTEM (Optional)
+-- Tambahkan checkpoint / teleport buttons disini jika ingin
+------------------------------------------------
