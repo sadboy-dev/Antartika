@@ -179,8 +179,7 @@ local function recalcFrame()
 end
 
 -- Hubungkan perubahan teks / visibilitas hanya untuk elemen yang relevan
-local layoutNames = { "up", "down", "onof", "TextLabel", "plus", "speed", "mine" }
-local excludedNames = { Close = true, minimize = true, minimize2 = true }
+local layoutNames = { "up", "down", "onof", "plus", "speed", "mine" }
 local function isLayoutChild(obj)
     if not obj or not obj.Name then return false end
     for _, name in ipairs(layoutNames) do
