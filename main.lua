@@ -228,7 +228,7 @@ vns.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        safeTeleport(root, CFrame.new(3718.99, 255.00, 235.67))
+        safeTeleport(root, CFrame.new(3727.81, 1508.71, -178.10))
     end
  end)
 
