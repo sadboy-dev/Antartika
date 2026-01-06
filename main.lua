@@ -21,6 +21,17 @@ Frame.BackgroundColor3 = Color3.fromRGB(163, 255, 137)
 Frame.BorderColor3 = Color3.fromRGB(103, 221, 213)
 Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
 Frame.Size = UDim2.new(0, 190, 0, 57)
+
+TextLabel.Parent = Frame
+TextLabel.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
+TextLabel.Position = UDim2.new(0.469327301, 0, 0, 0)
+TextLabel.Size = UDim2.new(0, 90, 0, 28)
+TextLabel.Font = Enum.Font.SourceSans
+TextLabel.Text = "Jriik89"
+TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 14.000
+TextLabel.TextWrapped = true
  
 cp1.Name = "cp1"
 cp1.Parent = Frame
@@ -44,28 +55,7 @@ cp2.TextColor3 = Color3.fromRGB(0, 0, 0)
 cp2.TextScaled = true
 cp2.TextSize = 14.000
 cp2.TextWrapped = true
- 
-fn.Name = "fn"
-fn.Parent = Frame
-fn.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-fn.Position = UDim2.new(0.702823281, 0, 0.491228074, 0)
-fn.Size = UDim2.new(0, 45, 0, 28)
-fn.Font = Enum.Font.SourceSans
-fn.Text = "FINISH"
-fn.TextColor3 = Color3.fromRGB(0, 0, 0)
-fn.TextSize = 14.000
- 
-TextLabel.Parent = Frame
-TextLabel.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-TextLabel.Position = UDim2.new(0.469327301, 0, 0, 0)
-TextLabel.Size = UDim2.new(0, 90, 0, 28)
-TextLabel.Font = Enum.Font.SourceSans
-TextLabel.Text = "Jriik89"
-TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-TextLabel.TextScaled = true
-TextLabel.TextSize = 14.000
-TextLabel.TextWrapped = true
- 
+
 vns.Name = "vinson"
 vns.Parent = Frame
 vns.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
@@ -77,7 +67,19 @@ vns.TextColor3 = Color3.fromRGB(0, 0, 0)
 vns.TextScaled = true
 vns.TextSize = 14.000
 vns.TextWrapped = true
- 
+
+cp3.Name = "cp3"
+cp3.Parent = Frame
+cp3.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
+cp3.Position = UDim2.new(0.231578946, 0, 0.491228074, 0)
+cp3.Size = UDim2.new(0, 45, 0, 29)
+cp3.Font = Enum.Font.SourceSans
+cp3.Text = "CP3"
+cp3.TextColor3 = Color3.fromRGB(0, 0, 0)
+cp3.TextScaled = true
+cp3.TextSize = 14.000
+cp3.TextWrapped = true
+
 cp4.Name = "cp4"
 cp4.Parent = Frame
 cp4.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
@@ -90,17 +92,15 @@ cp4.TextScaled = true
 cp4.TextSize = 14.000
 cp4.TextWrapped = true
  
-cp3.Name = "cp3"
-cp3.Parent = Frame
-cp3.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-cp3.Position = UDim2.new(0.231578946, 0, 0.491228074, 0)
-cp3.Size = UDim2.new(0, 45, 0, 29)
-cp3.Font = Enum.Font.SourceSans
-cp3.Text = "CP3"
-cp3.TextColor3 = Color3.fromRGB(0, 0, 0)
-cp3.TextScaled = true
-cp3.TextSize = 14.000
-cp3.TextWrapped = true
+fn.Name = "fn"
+fn.Parent = Frame
+fn.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
+fn.Position = UDim2.new(0.702823281, 0, 0.491228074, 0)
+fn.Size = UDim2.new(0, 45, 0, 28)
+fn.Font = Enum.Font.SourceSans
+fn.Text = "FINISH"
+fn.TextColor3 = Color3.fromRGB(0, 0, 0)
+fn.TextSize = 14.000
  
 closebutton.Name = "Close"
 closebutton.Parent = main.Frame
@@ -130,8 +130,6 @@ mini2.TextSize = 40
 mini2.Position = UDim2.new(0, 44, -1, 57)
 mini2.Visible = false
  
-speeds = 1
- 
 local speaker = game:GetService("Players").LocalPlayer
  
 local chr = game.Players.LocalPlayer.Character
@@ -147,6 +145,11 @@ Duration = 5;
  
 Frame.Active = true -- main = gui
 Frame.Draggable = true
+
+
+cp1 MouseButton1Down:connect(function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(3718.99, 255.00, 235.67)
+end)
  
 fn.MouseButton1Down:connect(function()
  
@@ -345,23 +348,7 @@ fn.MouseButton1Down:connect(function()
  
 end)
  
-local tis
- 
-cp1.MouseButton1Down:connect(function()
-    tis = cp1.MouseEnter:connect(function()
-        while tis do
-            wait()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,1,0)
-        end
-    end)
-end)
- 
-cp1.MouseLeave:connect(function()
-    if tis then
-        tis:Disconnect()
-        tis = nil
-    end
-end)
+
  
 local dis
  
