@@ -167,25 +167,27 @@ local function safeTeleport(root, targetCFrame)
         end
     end
 
-    -- simpan & set PlatformStand
-    local prevPlatformStand
+    -- simpan & set PlatformStand dan simpan HP/MaxHP
+    local prevPlatformStand, prevHealth, prevMaxHealth
+    local disabledStates = {Enum.HumanoidStateType.FallingDown, Enum.HumanoidStateType.Freefall, Enum.HumanoidStateType.Ragdoll}
     if humanoid then
         prevPlatformStand = humanoid.PlatformStand
+        prevHealth = humanoid.Health
+        prevMaxHealth = humanoid.MaxHealth
         humanoid.PlatformStand = true
+        -- perkuat MaxHealth sementara untuk menahan damage
+        pcall(function()
+            humanoid.MaxHealth = prevMaxHealth + 10000
+            humanoid.Health = humanoid.MaxHealth
+        end)
+        -- nonaktifkan beberapa state jatuh untuk sementara
+        for _, st in ipairs(disabledStates) do
+            pcall(function() humanoid:SetStateEnabled(st, false) end)
+        end
     end
 
-    -- buat jendela invulnerabilitas singkat (mencegah penurunan HP sementara)
-    local invDur = 0.6
-    local prevHealth
-    local healthConn
-    if humanoid then
-        prevHealth = humanoid.Health
-        healthConn = humanoid.HealthChanged:Connect(function(h)
-            if h < prevHealth then
-                humanoid.Health = prevHealth
-            end
-        end)
-    end
+    -- durasi invulnerabilitas yang diperpanjang
+    local invDur = 1.2
 
     -- teleport dengan offset vertikal agar tidak terbenam ke objek
     root.CFrame = targetCFrame + Vector3.new(0, 3, 0)
@@ -193,11 +195,17 @@ local function safeTeleport(root, targetCFrame)
     wait(invDur)
 
     -- kembalikan kondisi
-    if healthConn then healthConn:Disconnect() end
+    if humanoid then
+        pcall(function() humanoid.MaxHealth = prevMaxHealth end)
+        pcall(function() humanoid.Health = math.min(prevHealth or humanoid.Health, humanoid.MaxHealth) end)
+        pcall(function() humanoid.PlatformStand = prevPlatformStand end)
+        for _, st in ipairs(disabledStates) do
+            pcall(function() humanoid:SetStateEnabled(st, true) end)
+        end
+    end
     for p, val in pairs(prevCollide) do
         if p and p.Parent then p.CanCollide = val end
     end
-    if humanoid and prevPlatformStand ~= nil then humanoid.PlatformStand = prevPlatformStand end
 end
 
 cp1.MouseButton1Down:connect(function()
