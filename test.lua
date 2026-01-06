@@ -1,131 +1,135 @@
---// DELTA EXECUTOR GUI FIX
+--// DELTA EXECUTOR GUI (FIX EMPTY FRAME)
 
--- Services
 local UIS = game:GetService("UserInputService")
-
--- Parent GUI (DELTA FIX)
-local parentGui = gethui and gethui() or game:GetService("CoreGui")
+local parentGui = gethui and gethui() or game.CoreGui
 
 -- ScreenGui
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "DeltaGUI"
-ScreenGui.Parent = parentGui
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+local gui = Instance.new("ScreenGui")
+gui.Name = "DeltaGuiFix"
+gui.Parent = parentGui
+gui.ResetOnSpawn = false
 
 -- Main Frame
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 350, 0, 300)
-MainFrame.Position = UDim2.new(0.5, -175, 0.5, -150)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-MainFrame.BorderSizePixel = 0
-MainFrame.Parent = ScreenGui
-
-Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 350, 0, 300)
+main.Position = UDim2.new(0.5, -175, 0.5, -150)
+main.BackgroundColor3 = Color3.fromRGB(20,20,20)
+main.BorderSizePixel = 0
+main.Parent = gui
+Instance.new("UICorner", main).CornerRadius = UDim.new(0,10)
 
 -- Title Bar
-local TitleBar = Instance.new("Frame")
-TitleBar.Size = UDim2.new(1, 0, 0, 40)
-TitleBar.BackgroundTransparency = 1
-TitleBar.Parent = MainFrame
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1,0,0,40)
+titleBar.BackgroundTransparency = 1
+titleBar.Parent = main
 
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, -80, 1, 0)
-Title.Position = UDim2.new(0, 10, 0, 0)
-Title.Text = "Delta Executor GUI"
-Title.TextColor3 = Color3.fromRGB(255,255,255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 16
-Title.BackgroundTransparency = 1
-Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.Parent = TitleBar
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1,-80,1,0)
+title.Position = UDim2.new(0,10,0,0)
+title.Text = "Delta GUI"
+title.TextColor3 = Color3.new(1,1,1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 16
+title.BackgroundTransparency = 1
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = titleBar
 
--- Close Button
-local Close = Instance.new("TextButton")
-Close.Size = UDim2.new(0, 30, 0, 30)
-Close.Position = UDim2.new(1, -35, 0, 5)
-Close.Text = "X"
-Close.Font = Enum.Font.GothamBold
-Close.TextSize = 14
-Close.TextColor3 = Color3.new(1,1,1)
-Close.BackgroundColor3 = Color3.fromRGB(170, 50, 50)
-Close.Parent = TitleBar
-Instance.new("UICorner", Close)
+-- Close
+local close = Instance.new("TextButton")
+close.Size = UDim2.new(0,30,0,30)
+close.Position = UDim2.new(1,-35,0,5)
+close.Text = "X"
+close.Font = Enum.Font.GothamBold
+close.TextSize = 14
+close.TextColor3 = Color3.new(1,1,1)
+close.BackgroundColor3 = Color3.fromRGB(170,50,50)
+close.Parent = titleBar
+Instance.new("UICorner", close)
 
--- Minimize Button
-local Min = Instance.new("TextButton")
-Min.Size = UDim2.new(0, 30, 0, 30)
-Min.Position = UDim2.new(1, -70, 0, 5)
-Min.Text = "-"
-Min.Font = Enum.Font.GothamBold
-Min.TextSize = 18
-Min.TextColor3 = Color3.new(1,1,1)
-Min.BackgroundColor3 = Color3.fromRGB(70,70,70)
-Min.Parent = TitleBar
-Instance.new("UICorner", Min)
+-- Minimize
+local min = Instance.new("TextButton")
+min.Size = UDim2.new(0,30,0,30)
+min.Position = UDim2.new(1,-70,0,5)
+min.Text = "-"
+min.Font = Enum.Font.GothamBold
+min.TextSize = 18
+min.TextColor3 = Color3.new(1,1,1)
+min.BackgroundColor3 = Color3.fromRGB(70,70,70)
+min.Parent = titleBar
+Instance.new("UICorner", min)
 
 -- Button Holder
-local Holder = Instance.new("Frame")
-Holder.Size = UDim2.new(1, -20, 1, -60)
-Holder.Position = UDim2.new(0, 10, 0, 50)
-Holder.BackgroundTransparency = 1
-Holder.Parent = MainFrame
+local holder = Instance.new("Frame")
+holder.Size = UDim2.new(1,0,1,-40)
+holder.Position = UDim2.new(0,0,0,40)
+holder.BackgroundTransparency = 1
+holder.Parent = main
 
--- Grid Layout
-local Grid = Instance.new("UIGridLayout")
-Grid.CellSize = UDim2.new(0, 150, 0, 50)
-Grid.CellPadding = UDim2.new(0, 10, 0, 10)
-Grid.HorizontalAlignment = Enum.HorizontalAlignment.Center
-Grid.VerticalAlignment = Enum.VerticalAlignment.Center
-Grid.Parent = Holder
-
--- Buttons
-for i = 1, 6 do
+-- Function create button
+local function createButton(text, x, y)
 	local btn = Instance.new("TextButton")
-	btn.Text = "Button "..i
+	btn.Size = UDim2.new(0,150,0,45)
+	btn.Position = UDim2.new(0,x,0,y)
+	btn.Text = text
 	btn.Font = Enum.Font.Gotham
 	btn.TextSize = 14
 	btn.TextColor3 = Color3.new(1,1,1)
-	btn.BackgroundColor3 = Color3.fromRGB(45,45,45)
-	btn.Parent = Holder
+	btn.BackgroundColor3 = Color3.fromRGB(40,40,40)
+	btn.Parent = holder
 	Instance.new("UICorner", btn)
 
 	btn.MouseButton1Click:Connect(function()
-		print("Button "..i.." pressed")
+		print(text.." clicked")
 	end)
 end
 
--- Minimize Logic
+-- Buttons (2 kolom x 3 baris)
+local startX = 25
+local startY = 20
+local gapX = 175
+local gapY = 60
+
+local count = 1
+for row = 0,2 do
+	for col = 0,1 do
+		createButton("Button "..count,
+			startX + (gapX * col),
+			startY + (gapY * row)
+		)
+		count += 1
+	end
+end
+
+-- Minimize logic
 local minimized = false
-Min.MouseButton1Click:Connect(function()
+min.MouseButton1Click:Connect(function()
 	minimized = not minimized
-	Holder.Visible = not minimized
-	MainFrame.Size = minimized and UDim2.new(0,350,0,40) or UDim2.new(0,350,0,300)
+	holder.Visible = not minimized
+	main.Size = minimized and UDim2.new(0,350,0,40) or UDim2.new(0,350,0,300)
 end)
 
--- Close Logic
-Close.MouseButton1Click:Connect(function()
-	ScreenGui:Destroy()
+-- Close
+close.MouseButton1Click:Connect(function()
+	gui:Destroy()
 end)
 
--- Drag System (DELTA FIX)
+-- Drag
 local dragging, dragStart, startPos
-
-TitleBar.InputBegan:Connect(function(input)
+titleBar.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = true
 		dragStart = input.Position
-		startPos = MainFrame.Position
+		startPos = main.Position
 	end
 end)
 
 UIS.InputChanged:Connect(function(input)
 	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
 		local delta = input.Position - dragStart
-		MainFrame.Position = UDim2.new(
-			startPos.X.Scale,
-			startPos.X.Offset + delta.X,
-			startPos.Y.Scale,
-			startPos.Y.Offset + delta.Y
+		main.Position = UDim2.new(
+			startPos.X.Scale, startPos.X.Offset + delta.X,
+			startPos.Y.Scale, startPos.Y.Offset + delta.Y
 		)
 	end
 end)
