@@ -1,5 +1,5 @@
 --// DELTA ANDROID - NEON TELEPORT GUI
---// COOLDOWN DIMULAI SAAT SCRIPT DIJALANKAN
+--// SEQUENTIAL CHECKPOINT COOLDOWN SYSTEM
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -42,15 +42,39 @@ player.CharacterAdded:Connect(function(char)
 end)
 
 -- =====================================================
--- TELEPORT DATA + COOLDOWN (DETIK)
+-- CHECKPOINT DATA (URUTAN + COOLDOWN)
 -- =====================================================
-local Teleports = {
-	C1     = {cf=CFrame.new(-3640.67,229.43,289.87), cd=80},
-	C2     = {cf=CFrame.new(1860.78,105.82,-235.41), cd=60},
-	Vinson = {cf=CFrame.new(3731.35,1508.92,-184.39), cd=120},
-	C3     = {cf=CFrame.new(5709.64,320.89,628.29), cd=90},
-	C4     = {cf=CFrame.new(8992.34,595.60,103.32), cd=75},
-	Run    = {cf=CFrame.new(10113.24,552,35.11), cd=45},
+local Checkpoints = {
+	{
+		name = "C1",
+		cf = CFrame.new(-3640.67,229.43,289.87),
+		cd = 80
+	},
+	{
+		name = "C2",
+		cf = CFrame.new(1860.78,105.82,-235.41),
+		cd = 60
+	},
+	{
+		name = "Vinson",
+		cf = CFrame.new(3731.35,1508.92,-184.39),
+		cd = 120
+	},
+	{
+		name = "C3",
+		cf = CFrame.new(5709.64,320.89,628.29),
+		cd = 90
+	},
+	{
+		name = "C4",
+		cf = CFrame.new(8992.34,595.60,103.32),
+		cd = 75
+	},
+	{
+		name = "Run",
+		cf = CFrame.new(10113.24,552,35.11),
+		cd = 45
+	}
 }
 
 -- =====================================================
@@ -72,9 +96,9 @@ titleBar.Active = true
 Instance.new("UICorner",titleBar).CornerRadius = UDim.new(0,6)
 
 local title = Instance.new("TextLabel", titleBar)
-title.Size = UDim2.new(1,-80,1,0)
+title.Size = UDim2.new(1,-20,1,0)
 title.Position = UDim2.new(0,10,0,0)
-title.Text = "NEON TELEPORT"
+title.Text = "NEON CHECKPOINT"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 15
 title.TextColor3 = Color3.fromRGB(0,255,255)
@@ -87,17 +111,45 @@ holder.Position = UDim2.new(0,0,0,38)
 holder.BackgroundTransparency = 1
 
 -- =====================================================
--- COOLDOWN SYSTEM (START DI AWAL)
+-- BUTTON SYSTEM (SEQUENTIAL)
 -- =====================================================
-local startTime = tick()
-local lastUse = {}
+local buttons = {}
+local currentIndex = 1
 
-for name in pairs(Teleports) do
-	lastUse[name] = startTime -- SEMUA DIMULAI COOLDOWN
+local function lockButton(btn, text)
+	btn.Text = text or "LOCKED"
+	btn.TextColor3 = Color3.fromRGB(120,120,120)
+	btn.AutoButtonColor = false
 end
 
-local function createButton(name,x,y)
-	local data = Teleports[name]
+local function readyButton(btn, name)
+	btn.Text = name
+	btn.TextColor3 = Color3.fromRGB(0,255,255)
+	btn.AutoButtonColor = true
+end
+
+local function startCooldown(index)
+	local data = Checkpoints[index]
+	local btn = buttons[index]
+
+	lockButton(btn, "WAIT ("..data.cd.."s)")
+
+	task.spawn(function()
+		local start = tick()
+		while true do
+			local remain = data.cd - (tick() - start)
+			if remain <= 0 then
+				readyButton(btn, data.name)
+				break
+			end
+			btn.Text = "WAIT ("..math.ceil(remain).."s)"
+			task.wait(1)
+		end
+	end)
+end
+
+local function createButton(index, x, y)
+	local data = Checkpoints[index]
 
 	local btn = Instance.new("TextButton", holder)
 	btn.Size = UDim2.new(0,130,0,42)
@@ -105,54 +157,37 @@ local function createButton(name,x,y)
 	btn.Font = Enum.Font.Gotham
 	btn.TextSize = 13
 	btn.BackgroundColor3 = Color3.fromRGB(25,25,35)
-	btn.TextColor3 = Color3.fromRGB(255,80,80)
 	Instance.new("UICorner",btn).CornerRadius = UDim.new(0,8)
 
-	task.spawn(function()
-		while true do
-			local remain = data.cd - (tick() - lastUse[name])
-			if remain <= 0 then
-				btn.Text = name
-				btn.TextColor3 = Color3.fromRGB(0,255,255)
-				break
-			else
-				btn.Text = "WAIT ("..math.ceil(remain).."s)"
-			end
-			task.wait(1)
+	lockButton(btn)
+
+	btn.MouseButton1Click:Connect(function()
+		if index ~= currentIndex then return end
+		if btn.Text ~= data.name then return end
+
+		safeTeleport(data.cf)
+		lockButton(btn)
+
+		currentIndex += 1
+		if Checkpoints[currentIndex] then
+			startCooldown(currentIndex)
 		end
 	end)
 
-	btn.MouseButton1Click:Connect(function()
-		if tick() - lastUse[name] < data.cd then return end
-		lastUse[name] = tick()
-		safeTeleport(data.cf)
-
-		task.spawn(function()
-			while true do
-				local remain = data.cd - (tick() - lastUse[name])
-				if remain <= 0 then
-					btn.Text = name
-					btn.TextColor3 = Color3.fromRGB(0,255,255)
-					break
-				else
-					btn.Text = "WAIT ("..math.ceil(remain).."s)"
-					btn.TextColor3 = Color3.fromRGB(255,80,80)
-				end
-				task.wait(1)
-			end
-		end)
-	end)
+	buttons[index] = btn
 end
 
 -- Layout
 local padX,padY,gapY = 15,18,55
 local leftX,rightX = padX,300-130-padX
-local names = {"C1","C2","Vinson","C3","C4","Run"}
 local i=1
 for row=0,2 do
-	createButton(names[i],leftX,padY+gapY*row); i+=1
-	createButton(names[i],rightX,padY+gapY*row); i+=1
+	createButton(i,leftX,padY+gapY*row); i+=1
+	createButton(i,rightX,padY+gapY*row); i+=1
 end
+
+-- START: hanya C1 cooldown
+startCooldown(1)
 
 -- =====================================================
 -- DRAG (TOUCH + MOUSE)
@@ -164,14 +199,4 @@ titleBar.InputBegan:Connect(function(input)
 		dragStart=input.Position
 		startPos=main.Position
 		input.Changed:Connect(function()
-			if input.UserInputState==Enum.UserInputState.End then dragging=false end
-		end)
-	end
-end)
-
-UIS.InputChanged:Connect(function(input)
-	if dragging and (input.UserInputType==Enum.UserInputType.Touch or input.UserInputType==Enum.UserInputType.MouseMovement) then
-		local delta=input.Position-dragStart
-		main.Position=UDim2.new(startPos.X.Scale,startPos.X.Offset+delta.X,startPos.Y.Scale,startPos.Y.Offset+delta.Y)
-	end
-end)
+			if input.UserInputState==Enum.UserInputState
