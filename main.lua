@@ -89,7 +89,7 @@ titleBar.Active = true
 titleBar.ZIndex = 3
 
 local title = Instance.new("TextLabel", titleBar)
-title.Text = "NEON CHECKPOINT"
+title.Text = "Jriik Tools"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 14
 title.TextColor3 = Color3.fromRGB(0,255,255)
