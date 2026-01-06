@@ -45,7 +45,7 @@ local function safeTeleport(cf)
 
 	hrp.Anchored = true
 	hum:ChangeState(Enum.HumanoidStateType.Physics)
-	giveShield(1.5)
+	giveShield(1.9)
 	hrp.CFrame = cf + Vector3.new(0,4,0)
 
 	task.wait(0.25)
