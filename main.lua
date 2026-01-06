@@ -16,31 +16,6 @@ main.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 main.ResetOnSpawn = false
 
-local C1 = {
-    "https://raw.githubusercontent.com/sadboy-dev/Antartika/refs/heads/main/c1.lua",
-}
-
-local C2 = {
-    "https://raw.githubusercontent.com/sadboy-dev/Antartika/refs/heads/main/c2.lua",
-}
-
-local VNS = {
-    "https://raw.githubusercontent.com/sadboy-dev/Antartika/refs/heads/main/vinson.lua",
-}
-
-local C3 = {
-    "https://raw.githubusercontent.com/sadboy-dev/Antartika/refs/heads/main/c3.lua",
-}
-
-local C4 = {
-    "https://raw.githubusercontent.com/sadboy-dev/Antartika/refs/heads/main/c4.lua",
-}
-
-local FINISH = {
-    "https://raw.githubusercontent.com/sadboy-dev/Antartika/refs/heads/main/finish.lua",
-}
-
-
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
@@ -177,13 +152,37 @@ Duration = 5;
 Frame.Active = true -- main = gui
 Frame.Draggable = true
 
-
+local function safeTeleport(root, targetCFrame)
+    if not root or not targetCFrame then return end
+    local char = root.Parent
+    if not char then return end
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    local prevCollide = {}
+    for _, p in ipairs(char:GetDescendants()) do
+        if p:IsA("BasePart") then
+            prevCollide[p] = p.CanCollide
+            p.CanCollide = false
+        end
+    end
+    local prevPlatformStand
+    if humanoid then
+        prevPlatformStand = humanoid.PlatformStand
+        humanoid.PlatformStand = true
+    end
+    -- teleport dengan sedikit offset vertikal agar tidak terbenam kedalam objek
+    root.CFrame = targetCFrame + Vector3.new(0, 3, 0)
+    wait(0.2)
+    for p, val in pairs(prevCollide) do
+        if p and p.Parent then p.CanCollide = val end
+    end
+    if humanoid and prevPlatformStand ~= nil then humanoid.PlatformStand = prevPlatformStand end
+end
 
 cp1.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        root.CFrame = CFrame.new(-3718.99, 255.00, 235.67)
+        safeTeleport(root, CFrame.new(-3718.99, 255.00, 235.67))
     end
  end)
 
@@ -191,7 +190,7 @@ cp2.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        root.CFrame = CFrame.new(3718.99, 255.00, 235.67)
+        safeTeleport(root, CFrame.new(3718.99, 255.00, 235.67))
     end
  end)
 
@@ -199,7 +198,7 @@ vns.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        root.CFrame = CFrame.new(3718.99, 255.00, 235.67)
+        safeTeleport(root, CFrame.new(3718.99, 255.00, 235.67))
     end
  end)
 
@@ -207,7 +206,7 @@ cp3.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        root.CFrame = CFrame.new(3718.99, 255.00, 235.67)
+        safeTeleport(root, CFrame.new(3718.99, 255.00, 235.67))
     end
  end)
 
@@ -215,7 +214,7 @@ cp4.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        root.CFrame = CFrame.new(3718.99, 255.00, 235.67)
+        safeTeleport(root, CFrame.new(3718.99, 255.00, 235.67))
     end
  end)
 
@@ -223,7 +222,7 @@ fn.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        root.CFrame = CFrame.new(170.09, 889.82, 149.50) * CFrame.Angles(0,0,0)
+        safeTeleport(root, CFrame.new(170.09, 889.82, 149.50) * CFrame.Angles(0,0,0))
     end
  end)
 
