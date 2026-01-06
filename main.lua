@@ -1,284 +1,270 @@
-local main = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
-local TextLabel = Instance.new("TextLabel")
-local cp1 = Instance.new("TextButton")
-local cp2 = Instance.new("TextButton")
-local vns = Instance.new("TextButton")
-local cp3 = Instance.new("TextButton")
-local cp4 = Instance.new("TextLabel")
-local fn = Instance.new("TextButton")
-local closebutton = Instance.new("TextButton")
-local mini = Instance.new("TextButton")
-local mini2 = Instance.new("TextButton")
- 
-main.Name = "main"
-main.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-main.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-main.ResetOnSpawn = false
+--// DELTA ANDROID | NEON CHECKPOINT GUI (FINAL FULL)
+--// AUTO DETECT + RESPAWN + RESET + SEQUENTIAL COOLDOWN
 
-local Players = game:GetService("Players")
- 
-Frame.Parent = main
-Frame.BackgroundColor3 = Color3.fromRGB(163, 255, 137)
-Frame.BorderColor3 = Color3.fromRGB(103, 221, 213)
-Frame.Position = UDim2.new(0.100320168, 0, 0.379746825, 0)
-Frame.Size = UDim2.new(0, 300, 0, 150)
-
-TextLabel.Parent = Frame
-TextLabel.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-TextLabel.Position = UDim2.new(0.35, 0, 0.05, 0)
-TextLabel.Size = UDim2.new(0, 90, 0, 30)
-TextLabel.Font = Enum.Font.SourceSans
-TextLabel.Text = "Jriik89"
-TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-TextLabel.TextScaled = true
-TextLabel.TextSize = 14.000
-TextLabel.TextWrapped = true
- 
-cp1.Name = "cp1"
-cp1.Parent = Frame
-cp1.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-cp1.Position = UDim2.new(0.05, 0, 0.25, 0)
-cp1.Size = UDim2.new(0, 60, 0, 30)
-cp1.Font = Enum.Font.SourceSans
-cp1.Text = "CP1"
-cp1.TextColor3 = Color3.fromRGB(0, 0, 0)
-cp1.TextScaled = true
-cp1.TextSize = 14.000
-cp1.TextWrapped = true
- 
-cp2.Name = "cp2"
-cp2.Parent = Frame
-cp2.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-cp2.Position = UDim2.new(0, 0, 0.491228074, 0)
-cp2.Size = UDim2.new(0, 45, 0, 28)
-cp2.Font = Enum.Font.SourceSans
-cp2.Text = "CP2"
-cp2.TextColor3 = Color3.fromRGB(0, 0, 0)
-cp2.TextScaled = true
-cp2.TextSize = 14.000
-cp2.TextWrapped = true
-
-vns.Name = "vns"
-vns.Parent = Frame
-vns.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-vns.Position = UDim2.new(0.05, 0, 0.5, 0)
-vns.Size = UDim2.new(0, 60, 0, 30)
-vns.Font = Enum.Font.SourceSans
-vns.Text = "Vinson"
-vns.TextColor3 = Color3.fromRGB(0, 0, 0)
-vns.TextScaled = true
-vns.TextSize = 14.000
-vns.TextWrapped = true
-
-cp3.Name = "cp3"
-cp3.Parent = Frame
-cp3.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-cp3.Position = UDim2.new(0.25, 0, 0.5, 0)
-cp3.Size = UDim2.new(0, 60, 0, 30)
-cp3.Font = Enum.Font.SourceSans
-cp3.Text = "CP3"
-cp3.TextColor3 = Color3.fromRGB(0, 0, 0)
-cp3.TextScaled = true
-cp3.TextSize = 14.000
-cp3.TextWrapped = true
-
-cp4.Name = "cp4"
-cp4.Parent = Frame
-cp4.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-cp4.Position = UDim2.new(0.45, 0, 0.25, 0)
-cp4.Size = UDim2.new(0, 60, 0, 30)
-cp4.Font = Enum.Font.SourceSans
-cp4.Text = "CP4"
-cp4.TextColor3 = Color3.fromRGB(0, 0, 0)
-cp4.TextScaled = true
-cp4.TextSize = 14.000
-cp4.TextWrapped = true
- 
-fn.Name = "fn"
-fn.Parent = Frame
-fn.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-fn.Position = UDim2.new(0.65, 0, 0.5, 0)
-fn.Size = UDim2.new(0, 60, 0, 30)
-fn.Font = Enum.Font.SourceSans
-fn.Text = "FINISH"
-fn.TextColor3 = Color3.fromRGB(0, 0, 0)
-fn.TextSize = 14.000
- 
-closebutton.Name = "Close"
-closebutton.Parent = main.Frame
-closebutton.BackgroundColor3 = Color3.fromRGB(225, 25, 0)
-closebutton.Font = "SourceSans"
-closebutton.Size = UDim2.new(0, 45, 0, 28)
-closebutton.Text = "X"
-closebutton.TextSize = 30
-closebutton.Position =  UDim2.new(0, 0, -1, 27)
- 
-mini.Name = "minimize"
-mini.Parent = main.Frame
-mini.BackgroundColor3 = Color3.fromRGB(255, 249, 74)
-mini.Font = "SourceSans"
-mini.Size = UDim2.new(0, 45, 0, 28)
-mini.Text = "-"
-mini.TextSize = 40
-mini.Position = UDim2.new(0, 44, -1, 27)
- 
-mini2.Name = "minimize2"
-mini2.Parent = main.Frame
-mini2.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
-mini2.Font = "SourceSans"
-mini2.Size = UDim2.new(0, 45, 0, 28)
-mini2.Text = "+"
-mini2.TextSize = 40
-mini2.Position = UDim2.new(0, 44, -1, 57)
-mini2.Visible = false
- 
-game:GetService("StarterGui"):SetCore("SendNotification", { 
-    Title = "Script Teleport By:";
-    Text = "Jriik89";
-    Icon = "rbxthumb://type=Asset&id=5107182114&w=150&h=150"})
-Duration = 5;
- 
-Frame.Active = true -- main = gui
-Frame.Draggable = true
-
-local function safeTeleport(root, targetCFrame)
-    if not root or not targetCFrame then return end
-    local char = root.Parent
-    if not char then return end
-    local humanoid = char:FindFirstChildOfClass("Humanoid")
-
-    -- nonaktifkan collision sementara
-    local prevCollide = {}
-    for _, p in ipairs(char:GetDescendants()) do
-        if p:IsA("BasePart") then
-            prevCollide[p] = p.CanCollide
-            p.CanCollide = false
-        end
-    end
-
-    -- simpan & set PlatformStand dan simpan HP/MaxHP
-    local prevPlatformStand, prevHealth, prevMaxHealth
-    local disabledStates = {Enum.HumanoidStateType.FallingDown, Enum.HumanoidStateType.Freefall, Enum.HumanoidStateType.Ragdoll}
-    if humanoid then
-        prevPlatformStand = humanoid.PlatformStand
-        prevHealth = humanoid.Health
-        prevMaxHealth = humanoid.MaxHealth
-        humanoid.PlatformStand = true
-        -- perkuat MaxHealth sementara untuk menahan damage
-        pcall(function()
-            humanoid.MaxHealth = prevMaxHealth + 10000
-            humanoid.Health = humanoid.MaxHealth
-        end)
-        -- nonaktifkan beberapa state jatuh untuk sementara
-        for _, st in ipairs(disabledStates) do
-            pcall(function() humanoid:SetStateEnabled(st, false) end)
-        end
-    end
-
-    -- durasi invulnerabilitas yang diperpanjang
-    local invDur = 1.2
-
-    -- teleport dengan offset vertikal agar tidak terbenam ke objek
-    root.CFrame = targetCFrame + Vector3.new(0, 3, 0)
-
-    wait(invDur)
-
-    -- kembalikan kondisi
-    if humanoid then
-        pcall(function() humanoid.MaxHealth = prevMaxHealth end)
-        pcall(function() humanoid.Health = math.min(prevHealth or humanoid.Health, humanoid.MaxHealth) end)
-        pcall(function() humanoid.PlatformStand = prevPlatformStand end)
-        for _, st in ipairs(disabledStates) do
-            pcall(function() humanoid:SetStateEnabled(st, true) end)
-        end
-    end
-    for p, val in pairs(prevCollide) do
-        if p and p.Parent then p.CanCollide = val end
-    end
+if game.CoreGui:FindFirstChild("NeonCheckpointGui") then
+	game.CoreGui.NeonCheckpointGui:Destroy()
 end
 
-cp1.MouseButton1Down:connect(function()
-    local plr = game.Players.LocalPlayer
-    local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-    if root then
-        safeTeleport(root, CFrame.new(-3640.67, 229.43, 289.87))
-    end
- end)
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+local parentGui = gethui and gethui() or game.CoreGui
 
-cp2.MouseButton1Down:connect(function()
-    local plr = game.Players.LocalPlayer
-    local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-    if root then
-        safeTeleport(root, CFrame.new(1860.78, 105.82, -235.41))
-    end
- end)
+-- =====================================================
+-- SAFE TELEPORT (ANTI DAMAGE)
+-- =====================================================
+local function safeTeleport(cf)
+	local char = player.Character or player.CharacterAdded:Wait()
+	local hrp = char:WaitForChild("HumanoidRootPart")
+	local hum = char:WaitForChild("Humanoid")
 
-vns.MouseButton1Down:connect(function()
-    local plr = game.Players.LocalPlayer
-    local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-    if root then
-        safeTeleport(root, CFrame.new(3731.35, 1508.92, -184.39))
-    end
- end)
+	hrp.Anchored = true
+	hum:ChangeState(Enum.HumanoidStateType.Physics)
+	hrp.CFrame = cf + Vector3.new(0,4,0)
 
-cp3.MouseButton1Down:connect(function()
-    local plr = game.Players.LocalPlayer
-    local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-    if root then
-        safeTeleport(root, CFrame.new(5709.64, 320.89, 628.29))
-    end
- end)
+	task.wait(0.25)
+	hum:ChangeState(Enum.HumanoidStateType.GettingUp)
+	hrp.Anchored = false
+end
 
-cp4.MouseButton1Down:connect(function()
-    local plr = game.Players.LocalPlayer
-    local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-    if root then
-        safeTeleport(root, CFrame.new(8992.34, 595.60, 103.32))
-    end
- end)
+-- =====================================================
+-- CHECKPOINT DATA
+-- =====================================================
+local Checkpoints = {
+	{name="C1",     cf=CFrame.new(-3640.67,229.43,289.87), cd=80},
+	{name="C2",     cf=CFrame.new(1860.78,105.82,-235.41), cd=60},
+	{name="Vinson", cf=CFrame.new(3731.35,1508.92,-184.39), cd=120},
+	{name="C3",     cf=CFrame.new(5709.64,320.89,628.29), cd=90},
+	{name="C4",     cf=CFrame.new(8992.34,595.60,103.32), cd=75},
+	{name="Run",    cf=CFrame.new(10113.24,552,35.11), cd=45},
+}
 
-fn.MouseButton1Down:connect(function()
-    local plr = game.Players.LocalPlayer
-    local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-    if root then
-        safeTeleport(root, CFrame.new(10113.24, 552.00, 35.11))
-    end
- end)
+-- =====================================================
+-- DETECT CHECKPOINT
+-- =====================================================
+local CHECKPOINT_RADIUS = 120
+local finishedOnce = false
 
-game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function(char)
-    wait(0.7)
-    game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
-    game.Players.LocalPlayer.Character.Animate.Disabled = false
- 
+local function detectCheckpoint()
+	local char = player.Character or player.CharacterAdded:Wait()
+	local hrp = char:WaitForChild("HumanoidRootPart")
+
+	local closestIndex = nil
+	local closestDist = math.huge
+
+	for i,cp in ipairs(Checkpoints) do
+		local d = (hrp.Position - cp.cf.Position).Magnitude
+		if d < closestDist then
+			closestDist = d
+			closestIndex = i
+		end
+	end
+
+	if not closestIndex or closestDist > CHECKPOINT_RADIUS then
+		return 0
+	end
+
+	return closestIndex
+end
+
+-- =====================================================
+-- GUI
+-- =====================================================
+local gui = Instance.new("ScreenGui", parentGui)
+gui.Name = "NeonCheckpointGui"
+gui.ResetOnSpawn = false
+
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.new(0,280,0,240)
+main.Position = UDim2.new(0.5,-140,0.5,-120)
+main.BackgroundColor3 = Color3.fromRGB(15,15,20)
+main.ZIndex = 1
+Instance.new("UICorner",main).CornerRadius = UDim.new(0,8)
+
+-- TITLE BAR (NO UICORNER)
+local titleBar = Instance.new("Frame", main)
+titleBar.Size = UDim2.new(1,0,0,36)
+titleBar.BackgroundColor3 = Color3.fromRGB(20,20,30)
+titleBar.Active = true
+titleBar.ZIndex = 3
+
+local title = Instance.new("TextLabel", titleBar)
+title.Text = "NEON CHECKPOINT"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 14
+title.TextColor3 = Color3.fromRGB(0,255,255)
+title.BackgroundTransparency = 1
+title.Size = UDim2.new(1,-90,1,0)
+title.Position = UDim2.new(0,10,0,0)
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.ZIndex = 4
+
+-- CLOSE
+local close = Instance.new("TextButton", titleBar)
+close.Text = "X"
+close.Font = Enum.Font.GothamBold
+close.TextSize = 14
+close.TextColor3 = Color3.fromRGB(255,80,80)
+close.Size = UDim2.new(0,26,0,26)
+close.Position = UDim2.new(1,-30,0.5,-13)
+close.BackgroundTransparency = 1
+close.ZIndex = 5
+close.MouseButton1Click:Connect(function()
+	gui:Destroy()
 end)
 
-closebutton.MouseButton1Click:Connect(function()
-    main:Destroy()
+-- MINIMIZE
+local minimize = Instance.new("TextButton", titleBar)
+minimize.Text = "—"
+minimize.Font = Enum.Font.GothamBold
+minimize.TextSize = 18
+minimize.TextColor3 = Color3.fromRGB(0,255,255)
+minimize.Size = UDim2.new(0,26,0,26)
+minimize.Position = UDim2.new(1,-60,0.5,-13)
+minimize.BackgroundTransparency = 1
+minimize.ZIndex = 5
+
+-- CONTENT
+local holder = Instance.new("Frame", main)
+holder.Position = UDim2.new(0,0,0,36)
+holder.Size = UDim2.new(1,0,1,-36)
+holder.BackgroundTransparency = 1
+holder.ZIndex = 2
+
+local minimized = false
+minimize.MouseButton1Click:Connect(function()
+	minimized = not minimized
+	holder.Visible = not minimized
+	main.Size = minimized and UDim2.new(0,280,0,36) or UDim2.new(0,280,0,240)
 end)
- 
-mini.MouseButton1Click:Connect(function()
-    cp1.Visible = false
-    cp2.Visible = false
-    vns.Visible = false
-    cp3.Visible = false
-    cp4.Visible = false
-    fn.Visible = false
-    mini.Visible = false
-    mini2.Visible = true
-    main.Frame.BackgroundTransparency = 1
-    closebutton.Position = UDim2.new(0, 0, -1, 57)
+
+-- =====================================================
+-- BUTTON SYSTEM
+-- =====================================================
+local buttons = {}
+local currentIndex = 1
+
+local function lock(btn,text)
+	btn.Text = text
+	btn.TextColor3 = Color3.fromRGB(130,130,130)
+	btn.AutoButtonColor = false
+end
+
+local function ready(btn,text)
+	btn.Text = text
+	btn.TextColor3 = Color3.fromRGB(0,255,255)
+	btn.AutoButtonColor = true
+end
+
+local function startCooldown(i)
+	local d = Checkpoints[i]
+	local b = buttons[i]
+	if not d or not b then return end
+
+	task.spawn(function()
+		for t=d.cd,1,-1 do
+			b.Text = "WAIT ("..t.."s)"
+			task.wait(1)
+		end
+		ready(b,d.name)
+	end)
+end
+
+local function makeButton(i,x,y)
+	local d = Checkpoints[i]
+	if not d then return end
+
+	local b = Instance.new("TextButton", holder)
+	b.Size = UDim2.new(0,120,0,38)
+	b.Position = UDim2.new(0,x,0,y)
+	b.BackgroundColor3 = Color3.fromRGB(25,25,35)
+	b.Font = Enum.Font.Gotham
+	b.TextSize = 12
+	b.ZIndex = 3
+	Instance.new("UICorner",b).CornerRadius = UDim.new(0,8)
+
+	lock(b,"LOCKED")
+
+	b.MouseButton1Click:Connect(function()
+		if i ~= currentIndex or b.Text ~= d.name then return end
+		safeTeleport(d.cf)
+		lock(b,"DONE")
+		currentIndex += 1
+		if currentIndex > #Checkpoints then
+			finishedOnce = true
+			return
+		end
+		startCooldown(currentIndex)
+	end)
+
+	buttons[i] = b
+end
+
+-- LAYOUT
+local px,py,gy = 14,14,52
+local lx,rx = px,280-120-px
+local idx=1
+for r=0,2 do
+	makeButton(idx,lx,py+r*gy); idx+=1
+	makeButton(idx,rx,py+r*gy); idx+=1
+end
+
+-- =====================================================
+-- SYNC PROGRESS (START + RESPAWN)
+-- =====================================================
+local function syncProgress()
+	task.wait(1)
+
+	local detected = detectCheckpoint()
+
+	if finishedOnce and detected == 0 then
+		currentIndex = 1
+		finishedOnce = false
+	else
+		if detected == 0 then
+			currentIndex = 1
+		else
+			currentIndex = detected + 1
+		end
+	end
+
+	if currentIndex > #Checkpoints then
+		currentIndex = #Checkpoints
+	end
+
+	for i,btn in pairs(buttons) do
+		if i < currentIndex then
+			lock(btn,"DONE")
+		elseif i == currentIndex then
+			lock(btn,"WAIT")
+		else
+			lock(btn,"LOCKED")
+		end
+	end
+
+	startCooldown(currentIndex)
+end
+
+syncProgress()
+player.CharacterAdded:Connect(syncProgress)
+
+-- =====================================================
+-- DRAG TOUCH
+-- =====================================================
+local drag,ds,sp
+titleBar.InputBegan:Connect(function(i)
+	if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then
+		drag=true ds=i.Position sp=main.Position
+	end
 end)
- 
-mini2.MouseButton1Click:Connect(function()
-    cp1.Visible = true
-    cp2.Visible = true
-    vns.Visible = true
-    cp3.Visible = true
-    cp4.Visible = true
-    fn.Visible = true
-    mini.Visible = true
-    mini2.Visible = false
-    main.Frame.BackgroundTransparency = 0 
-    closebutton.Position =  UDim2.new(0, 0, -1, 27)
+
+UIS.InputChanged:Connect(function(i)
+	if drag and (i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseMovement) then
+		local d=i.Position-ds
+		main.Position=UDim2.new(sp.X.Scale,sp.X.Offset+d.X,sp.Y.Scale,sp.Y.Offset+d.Y)
+	end
+end)
+
+UIS.InputEnded:Connect(function()
+	drag=false
 end)
