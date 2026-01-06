@@ -56,9 +56,9 @@ fn.TextColor3 = Color3.fromRGB(0, 0, 0)
 fn.TextSize = 14.000
  
 TextLabel.Parent = Frame
-TextLabel.BackgroundColor3 = Color3.fromRGB(242, 60, 255)
+TextLabel.BackgroundColor3 = Color3.fromRGB(79, 255, 152)
 TextLabel.Position = UDim2.new(0.469327301, 0, 0, 0)
-TextLabel.Size = UDim2.new(0, 100, 0, 28)
+TextLabel.Size = UDim2.new(0, 90, 0, 28)
 TextLabel.Font = Enum.Font.SourceSans
 TextLabel.Text = "Jriik89"
 TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
