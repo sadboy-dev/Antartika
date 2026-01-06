@@ -236,7 +236,7 @@ cp3.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        safeTeleport(root, CFrame.new(3718.99, 255.00, 235.67))
+        safeTeleport(root, CFrame.new(5892.33, 321.00, -18.79))
     end
  end)
 
@@ -244,7 +244,7 @@ cp4.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        safeTeleport(root, CFrame.new(3718.99, 255.00, 235.67))
+        safeTeleport(root, CFrame.new(8992.34, 595.60, 103.32))
     end
  end)
 
@@ -252,7 +252,7 @@ fn.MouseButton1Down:connect(function()
     local plr = game.Players.LocalPlayer
     local root = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if root then
-        safeTeleport(root, CFrame.new(170.09, 889.82, 149.50) * CFrame.Angles(0,0,0))
+        safeTeleport(root, CFrame.new(10113.24, 552.00, 35.11))
     end
  end)
 
