@@ -1,5 +1,5 @@
---// DELTA SAFE | FULL READY 1 FILE
--- NEON GUI + SHIELD + FAIL-SAFE TELEPORT + 2-COLUMN + WALK SPEED SLIDER + MOBILE DRAG
+--// DELTA SAFE | FULL READY MOBILE-FRIENDLY GUI
+-- NEON GUI + SHIELD + FAIL-SAFE TELEPORT + 2-COLUMN + SMALL WALK SPEED SLIDER + DRAGABLE LOGO
 
 -- CLEAN OLD GUI
 pcall(function()
@@ -200,11 +200,11 @@ end
 startCooldown(1)
 
 ------------------------------------------------
--- WALK SPEED SLIDER
+-- SMALL WALK SPEED SLIDER
 ------------------------------------------------
 local sliderHolder = Instance.new("Frame", main)
-sliderHolder.Size = UDim2.new(1,-20,0,50)
-sliderHolder.Position = UDim2.new(0,10,1,-55)
+sliderHolder.Size = UDim2.new(1,-40,0,40)
+sliderHolder.Position = UDim2.new(0,20,1,-50)
 sliderHolder.BackgroundColor3 = Color3.fromRGB(25,25,35)
 Instance.new("UICorner",sliderHolder).CornerRadius = UDim.new(0,8)
 
@@ -223,7 +223,6 @@ slider.Position = UDim2.new(0,0,0.6,0)
 slider.BackgroundColor3 = Color3.fromRGB(0,255,255)
 Instance.new("UICorner",slider).CornerRadius = UDim.new(0,4)
 
--- FUNCTION SLIDER MOVE
 local function updateSlider(posX)
 	local rel = math.clamp(posX - sliderHolder.AbsolutePosition.X,0,sliderHolder.AbsoluteSize.X)
 	slider.Size = UDim2.new(rel/sliderHolder.AbsoluteSize.X,0,0.4,10)
@@ -242,12 +241,12 @@ sliderHolder.InputBegan:Connect(function(input)
 	end
 end)
 sliderHolder.InputChanged:Connect(function(input)
-	if draggingSlider and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
+	if draggingSlider and (input.UserInputType==Enum.UserInputType.Touch or input.UserInputType==Enum.UserInputType.MouseMovement) then
 		updateSlider(input.Position.X)
 	end
 end)
 sliderHolder.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+	if input.UserInputType==Enum.UserInputType.Touch or input.UserInputType==Enum.UserInputType.MouseButton1 then
 		draggingSlider = false
 	end
 end)
@@ -272,35 +271,52 @@ close.MouseButton1Click:Connect(function()
 end)
 
 ------------------------------------------------
--- DRAG SUPPORT HP + PC
+-- DRAG SUPPORT HP + PC + LOGO
 ------------------------------------------------
 local dragging = false
 local dragStart, startPos
+local dragTarget = nil
 
 local function dragUpdate(input)
 	local delta = input.Position - dragStart
-	main.Position = UDim2.new(
-		startPos.X.Scale,
-		startPos.X.Offset + delta.X,
-		startPos.Y.Scale,
-		startPos.Y.Offset + delta.Y
-	)
+	if dragTarget then
+		dragTarget.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
+	end
 end
 
+-- MAIN DRAG
 titleBar.InputBegan:Connect(function(input)
 	if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
 		startPos = main.Position
+		dragTarget = main
 	end
 end)
+
+-- LOGO DRAG
+logo.InputBegan:Connect(function(input)
+	if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = logo.Position
+		dragTarget = logo
+	end
+end)
+
 UIS.InputChanged:Connect(function(input)
 	if dragging and (input.UserInputType==Enum.UserInputType.MouseMovement or input.UserInputType==Enum.UserInputType.Touch) then
 		dragUpdate(input)
 	end
 end)
 UIS.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+	if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
 		dragging = false
+		dragTarget = nil
 	end
 end)
