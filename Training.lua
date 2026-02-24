@@ -39,7 +39,7 @@ local Checkpoints = {
 	{name="C1", cf=CFrame.new(-3969.44, 149.63, 64.48)},
 	{name="C2", cf=CFrame.new(2843.37, 574.13, -321.68)},
 	{name="Tissue", cf=CFrame.new(6569.05, 332.36, 284.94)},
-	{name="C3", cf=CFrame.new(5709.64,320.89,628.29)},
+	{name="TanggaGoa", cf=CFrame.new(8072.17, 329.00, 412.34)},
 	{name="C4", cf=CFrame.new(8992.34,595.60,103.32)},
 	{name="Run", cf=CFrame.new(10113.24,552,35.11)},
 }
