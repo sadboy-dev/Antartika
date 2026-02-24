@@ -41,7 +41,7 @@ local Checkpoints = {
 	{name="Tissue", cf=CFrame.new(6569.05, 332.36, 284.94)},
 	{name="TanggaGoa", cf=CFrame.new(8072.17, 329.00, 412.34)},
 	{name="TanggaC4", cf=CFrame.new(8258.87, 384.31, 985.75)},
-	{name="Run", cf=CFrame.new(10113.24,552,35.11)},
+	{name="Licin", cf=CFrame.new(9445.88, 591.35, 244.83)},
 }
 
 ------------------------------------------------
