@@ -37,7 +37,7 @@ player.CharacterAdded:Connect(applyShield)
 ------------------------------------------------
 local Checkpoints = {
 	{name="C1", cf=CFrame.new(-3969.44, 149.63, 64.48)},
-	{name="C2", cf=CFrame.new(1860.78,105.82,-235.41)},
+	{name="C2", cf=CFrame.new(2843.37, 574.13, -321.68)},
 	{name="Vinson", cf=CFrame.new(3731.35,1508.92,-184.39)},
 	{name="C3", cf=CFrame.new(5709.64,320.89,628.29)},
 	{name="C4", cf=CFrame.new(8992.34,595.60,103.32)},
