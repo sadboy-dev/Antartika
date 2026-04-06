@@ -36,7 +36,7 @@ player.CharacterAdded:Connect(applyShield)
 -- CHECKPOINT DATA
 ------------------------------------------------
 local Checkpoints = {
-	{name="C1", cf=CFrame.new(-3969.44, 149.63, 64.48)},
+	{name="C1", cf=CFrame.new(-3231.74, 1489.39, 5420.16)},
 	{name="C2", cf=CFrame.new(2843.37, 574.13, -321.68)},
 	{name="Tissue", cf=CFrame.new(6569.05, 332.36, 284.94)},
 	{name="TanggaGoa", cf=CFrame.new(8072.17, 329.00, 412.34)},
